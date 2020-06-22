@@ -432,10 +432,10 @@ Date.prototype.addDays = function(days) {
 // check if a data is already in cache, 
 // if it is, stop requesting cache.
 // but it will keep requesting live once the lifecycle is due.
-var cache_status = {};
-for (const p in cache_mtime){
-	cache_status[p] = false;
-}
+// var cache_status = {};
+// for (const p in cache_mtime){
+// 	cache_status[p] = false;
+// }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
