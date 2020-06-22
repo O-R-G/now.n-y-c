@@ -471,7 +471,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 			
 	      if (httpRequest.status === 200) {	
 	      	if(counter > counter_max && hasCache && cache_lifecycle){
-	      		request_cache(name, data_type, results_count);
+	      		// request_cache(name, data_type, results_count);
 	      	}
       		
       		if(data_type == 'json'){
@@ -482,15 +482,15 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       		if(response){
       			now_timestamp = new Date().getTime();
     			now_timestamp = parseInt(now_timestamp/1000); // ms to s
-      			update_cache(name, response, data_type, now_timestamp); // updat
+      			// update_cache(name, response, data_type, now_timestamp); // updat
       			handle_msgs(name, response, results_count); // static/js/msg.js
-	        	cache_mtime[name+'.'+data_type] = now_timestamp;
+	        	// cache_mtime[name+'.'+data_type] = now_timestamp;
       		}
 	      	counter++;
 	      } else {
 	      	if(hasCache){
 	      		console.log('status !== 200, use cached file for '+name);
-	      		request_cache(name, data_type, results_count);
+	      		// request_cache(name, data_type, results_count);
 	      	}else{
 	      		console.log('please check the request url');
 	      	}
@@ -504,26 +504,26 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	httpRequest.send();
 }
 
-function update_cache(cache_filename = '', response, data_type, now_timestamp){
-	var cache_path = 'static/data/'+cache_filename+'.'+data_type;
-	response = JSON.stringify(response);
-	fs.writeFile(cache_path, response, function(err, result) {
-		if(err) console.log('error', err);
-	});
+// function update_cache(cache_filename = '', response, data_type, now_timestamp){
+// 	var cache_path = 'static/data/'+cache_filename+'.'+data_type;
+// 	response = JSON.stringify(response);
+// 	fs.writeFile(cache_path, response, function(err, result) {
+// 		if(err) console.log('error', err);
+// 	});
 	
-	cache_mtime[cache_filename+'.'+data_type] = now_timestamp;
-}
+// 	cache_mtime[cache_filename+'.'+data_type] = now_timestamp;
+// }
 	
-function request_cache(cache_filename = '', data_type, results_count = false){
-	var req_url = 'static/data/'+cache_filename+'.'+data_type;
-	var this_cache = fs.readFileSync(req_url);
-	this_cache = JSON.parse(this_cache);
-	var this_last_updated = fs.statSync(req_url).mtime;
-	this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
-	if(this_last_updated != cache_mtime[cache_filename+'.'+data_type])
-	    cache_mtime[cache_filename+'.'+data_type] = this_last_updated;
-	handle_msgs(cache_filename, this_cache, results_count);
-}
+// function request_cache(cache_filename = '', data_type, results_count = false){
+// 	var req_url = 'static/data/'+cache_filename+'.'+data_type;
+// 	var this_cache = fs.readFileSync(req_url);
+// 	this_cache = JSON.parse(this_cache);
+// 	var this_last_updated = fs.statSync(req_url).mtime;
+// 	this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
+// 	if(this_last_updated != cache_mtime[cache_filename+'.'+data_type])
+// 	    cache_mtime[cache_filename+'.'+data_type] = this_last_updated;
+// 	handle_msgs(cache_filename, this_cache, results_count);
+// }
 
 // -------------  end json.js     -----------------
 
