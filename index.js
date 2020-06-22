@@ -501,7 +501,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 }
 
 function update_cache(cache_filename = '', response, data_type, now_timestamp){
-	var cache_path = './static/data/'+cache_filename+'.'+data_type;
+	var cache_path = 'static/data/'+cache_filename+'.'+data_type;
 	response = JSON.stringify(response);
 	fs.writeFile(cache_path, response, function(err, result) {
 		if(err) console.log('error', err);
@@ -511,7 +511,7 @@ function update_cache(cache_filename = '', response, data_type, now_timestamp){
 }
 
 function request_cache(cache_filename = '', data_type, results_count = false){
-	var req_url = './static/data/'+cache_filename+'.'+data_type;
+	var req_url = 'static/data/'+cache_filename+'.'+data_type;
 	var this_cache = fs.readFileSync(req_url);
 	this_cache = JSON.parse(this_cache);
 	var this_last_updated = fs.statSync(req_url).mtime;
