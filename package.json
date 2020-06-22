@@ -1,0 +1,15 @@
+{
+  "name": "now",
+  "version": "1.0.0",
+  "description": "api for live data feeds to n-y-c.org",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "david reinfurt",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
