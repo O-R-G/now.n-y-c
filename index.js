@@ -439,20 +439,24 @@ for (const p in cache_mtime){
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
-    var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
-    var this_mtime = cache_mtime[name+'.'+data_type];
-    var now_timestamp = new Date().getTime();
-    now_timestamp = parseInt(now_timestamp/1000); // ms to s
-    if(cache_lifecycle){
-    	cache_lifecycle = cache_lifecycle * 60;
-    }
+    // var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
+    // var this_mtime = cache_mtime[name+'.'+data_type];
+    // var now_timestamp = new Date().getTime();
+    // now_timestamp = parseInt(now_timestamp/1000); // ms to s
+    // if(cache_lifecycle){
+    // 	cache_lifecycle = cache_lifecycle * 60;
+    // }
 
-    if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
-    	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
+    // if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
+    // 	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
-    }else{
-    	request_cache(name, data_type, results_count);
-    }
+    // }else{
+    // 	request_cache(name, data_type, results_count);
+    // }
+
+    var hasCache = false;
+    request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
+
 }
 
 function request_live(name, request_url, data_type,results_count = false, use_header = true, hasCache, now_timestamp, cache_lifecycle = false){
