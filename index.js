@@ -551,12 +551,13 @@ app.listen(3000, () => {
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();    
 	var char_num = 48;
-	var delay_ms = 3500;
+	var delay_ms = 1000;
+	var screen_interval = 3500;
 	var msgs_length = msgs.length;
-	var full_loop_ms = parseInt(msgs_length / char_num) * delay_ms + 1;
+	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
 	var position = Math.round(now % full_loop_ms);
-	position = parseInt ( position / delay_ms ) * char_num;
+	position = parseInt ( position / screen_interval ) * char_num;
 
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms});
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
 });
