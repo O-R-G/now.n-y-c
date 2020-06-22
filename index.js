@@ -15,11 +15,12 @@ app.use(cors());
 var dataFolder = './static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
-fs.readdir(dataFolder, (err, cache_filenames) => {
-	if(typeof cache_filenames != 'undefined'){
-		cache_filenames.forEach(name => {
+fs.readdir(dataFolder, (err, filenames) => {
+	if(typeof filenames != 'undefined'){
+		filenames.forEach(name => {
 	    var this_mtime = fs.statSync(dataFolder + name).mtime;
 		cache_mtime[name] = this_mtime;
+		cache_filenames.push(name);
 	  });
 	}
 });
