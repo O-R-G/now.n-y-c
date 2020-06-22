@@ -509,7 +509,7 @@ function update_cache(cache_filename = '', response, data_type, now_timestamp){
 	
 	cache_mtime[cache_filename+'.'+data_type] = now_timestamp;
 }
-
+	
 function request_cache(cache_filename = '', data_type, results_count = false){
 	var req_url = 'static/data/'+cache_filename+'.'+data_type;
 	var this_cache = fs.readFileSync(req_url);
