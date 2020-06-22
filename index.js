@@ -16,10 +16,12 @@ var dataFolder = './static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
 fs.readdir(dataFolder, (err, cache_filenames) => {
-  cache_filenames.forEach(name => {
-    var this_mtime = fs.statSync(dataFolder + name).mtime;
-	cache_mtime[name] = this_mtime;
-  });
+	if(typeof cache_filenames != 'undefined'){
+		cache_filenames.forEach(name => {
+	    var this_mtime = fs.statSync(dataFolder + name).mtime;
+		cache_mtime[name] = this_mtime;
+	  });
+	}
 });
 // var msgs_test = '';
 // var httpRequest = new XMLHttpRequest();
