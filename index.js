@@ -12,7 +12,7 @@ app.use(cors());
 // var call_request_json_js = require('./static/js/call_request_json.js');
 
 
-var dataFolder = './static/data/';
+var dataFolder = 'static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
 fs.readdir(dataFolder, (err, filenames) => {
