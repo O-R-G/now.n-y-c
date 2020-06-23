@@ -24,19 +24,6 @@ fs.readdir(dataFolder, (err, filenames) => {
 			cache_filenames.push(name);
 		});
 		call_request_json();
-		app.get("/test", (req, res, next) => {
-			var now = new Date().getTime();    
-			var char_num = 48;
-			var delay_ms = 1000;
-			var screen_interval = 3500;
-			var msgs_length = msgs.length;
-			var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
-			var position = Math.round(now % full_loop_ms);
-			position = parseInt ( position / screen_interval ) * char_num;
-
-			now = now/1000; // seconds since 1970 unix time
-			res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
-		});
 	}
 });
 // --------------  msgs.js -----------------
@@ -478,6 +465,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       			update_cache(name, response, data_type, now_timestamp); // updat
       			handle_msgs(name, response, results_count); // static/js/msg.js
 	        	cache_mtime[name+'.'+data_type] = now_timestamp;
+	        	ready_now++;
       		}
 	      	counter++;
 	      } else {
@@ -515,6 +503,7 @@ function request_cache(cache_filename = '', data_type, results_count = false){
 	this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
 	if(this_last_updated != cache_mtime[cache_filename+'.'+data_type])
 	    cache_mtime[cache_filename+'.'+data_type] = this_last_updated;
+	ready_now++;
 	handle_msgs(cache_filename, this_cache, results_count);
 }
 
@@ -536,7 +525,36 @@ function call_request_json(){
     }
 }
 // -------------  end call_request_json.js  ----
+function checkReady(){
+	if(ready_now == ready_full){
+		return true;
+	}
+	else
+	{
+		setTimeout(checkReady, 500);
+		// return false;
+	}
+}
+
 
 app.listen(3002, () => {
 	console.log("Server running on port 3002");
+});
+
+app.get("/test", (req, res, next) => {
+	if(checkReady()){
+		var now = new Date().getTime();    
+		var char_num = 48;
+		var delay_ms = 1000;
+		var screen_interval = 3500;
+		var msgs_length = msgs.length;
+		var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
+		var position = Math.round(now % full_loop_ms);
+		position = parseInt ( position / screen_interval ) * char_num;
+
+		now = now/1000; // seconds since 1970 unix time
+		res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
+	}
+	
+	
 });
