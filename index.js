@@ -11,8 +11,9 @@ app.use(cors());
 // var json_js = require('./static/js/json.js');
 // var call_request_json_js = require('./static/js/call_request_json.js');
 
+console.log(__dirname);
 
-var dataFolder = 'static/data/';
+var dataFolder = __dirname + 'static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
 
@@ -543,6 +544,7 @@ app.listen(3002, () => {
 
 app.get("/test", (req, res, next) => {
 	setTimeout(function(){
+		console.log(__dirname);
 		var now = new Date().getTime();    
 		var char_num = 48;
 		var delay_ms = 1000;
