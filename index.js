@@ -539,5 +539,5 @@ app.get("/test", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms});
 });
