@@ -15,37 +15,8 @@ app.use(cors());
 var dataFolder = 'static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
-// fs.readdir(dataFolder, (err, filenames) => {
-// 	if(typeof filenames != 'undefined'){
-// 		filenames.forEach(name => {
-// 	    var this_mtime = fs.statSync(dataFolder + name).mtime;
-// 		cache_mtime[name] = this_mtime;
-// 		cache_filenames.push(name);
-// 	  });
-// 	}
-// });
-// var msgs_test = '';
-// var httpRequest = new XMLHttpRequest();
-// httpRequest.onreadystatechange = function(){
-// 	// console.log('change'+httpRequest.readyState);
-// 	if (httpRequest.readyState === 4) {
-// 		if (httpRequest.status === 200) {	
-// 			// console.log('200'+httpRequest.responseText);
-// 		  	// if(counter > counter_max && hasCache && cache_lifecycle){
-// 		  	// 	console.log('reaches maximum');
-// 		  	// 	request_cache(name, data_type, results_count);
-// 		  	// }
-// 			var response = JSON.parse(httpRequest.responseText);
-// 			if(response){
-// 				msgs_test = response;
-// 				// console.log(msgs_test);
-// 			}
-// 		}
-//     }
-// }
 
-// httpRequest.open('GET', 'https://covidtracking.com/api/v1/states/current.json');
-// httpRequest.send();
+
 // --------------  msgs.js -----------------
 // date / time
 
@@ -439,23 +410,24 @@ Date.prototype.addDays = function(days) {
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
-    // var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
-    // var this_mtime = cache_mtime[name+'.'+data_type];
-    // var now_timestamp = new Date().getTime();
-    // now_timestamp = parseInt(now_timestamp/1000); // ms to s
-    // if(cache_lifecycle){
-    // 	cache_lifecycle = cache_lifecycle * 60;
-    // }
+    var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
+    console.log(hasCache);
+    var this_mtime = cache_mtime[name+'.'+data_type];
+    var now_timestamp = new Date().getTime();
+    now_timestamp = parseInt(now_timestamp/1000); // ms to s
+    if(cache_lifecycle){
+    	cache_lifecycle = cache_lifecycle * 60;
+    }
 
-    // if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
-    // 	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
+    if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
+    	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
-    // }else{
-    // 	request_cache(name, data_type, results_count);
-    // }
+    }else{
+    	request_cache(name, data_type, results_count);
+    }
 
-    var hasCache = false;
-    request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
+    // var hasCache = false;
+    // request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
 }
 
@@ -482,15 +454,15 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       		if(response){
       			now_timestamp = new Date().getTime();
     			now_timestamp = parseInt(now_timestamp/1000); // ms to s
-      			// update_cache(name, response, data_type, now_timestamp); // updat
+      			update_cache(name, response, data_type, now_timestamp); // updat
       			handle_msgs(name, response, results_count); // static/js/msg.js
-	        	// cache_mtime[name+'.'+data_type] = now_timestamp;
+	        	cache_mtime[name+'.'+data_type] = now_timestamp;
       		}
 	      	counter++;
 	      } else {
 	      	if(hasCache){
 	      		console.log('status !== 200, use cached file for '+name);
-	      		// request_cache(name, data_type, results_count);
+	      		request_cache(name, data_type, results_count);
 	      	}else{
 	      		console.log('please check the request url');
 	      	}
@@ -504,26 +476,26 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	httpRequest.send();
 }
 
-// function update_cache(cache_filename = '', response, data_type, now_timestamp){
-// 	var cache_path = 'static/data/'+cache_filename+'.'+data_type;
-// 	response = JSON.stringify(response);
-// 	fs.writeFile(cache_path, response, function(err, result) {
-// 		if(err) console.log('error', err);
-// 	});
+function update_cache(cache_filename = '', response, data_type, now_timestamp){
+	var cache_path = 'static/data/'+cache_filename+'.'+data_type;
+	response = JSON.stringify(response);
+	fs.writeFile(cache_path, response, function(err, result) {
+		if(err) console.log('error', err);
+	});
 	
-// 	cache_mtime[cache_filename+'.'+data_type] = now_timestamp;
-// }
+	cache_mtime[cache_filename+'.'+data_type] = now_timestamp;
+}
 	
-// function request_cache(cache_filename = '', data_type, results_count = false){
-// 	var req_url = 'static/data/'+cache_filename+'.'+data_type;
-// 	var this_cache = fs.readFileSync(req_url);
-// 	this_cache = JSON.parse(this_cache);
-// 	var this_last_updated = fs.statSync(req_url).mtime;
-// 	this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
-// 	if(this_last_updated != cache_mtime[cache_filename+'.'+data_type])
-// 	    cache_mtime[cache_filename+'.'+data_type] = this_last_updated;
-// 	handle_msgs(cache_filename, this_cache, results_count);
-// }
+function request_cache(cache_filename = '', data_type, results_count = false){
+	var req_url = 'static/data/'+cache_filename+'.'+data_type;
+	var this_cache = fs.readFileSync(req_url);
+	this_cache = JSON.parse(this_cache);
+	var this_last_updated = fs.statSync(req_url).mtime;
+	this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
+	if(this_last_updated != cache_mtime[cache_filename+'.'+data_type])
+	    cache_mtime[cache_filename+'.'+data_type] = this_last_updated;
+	handle_msgs(cache_filename, this_cache, results_count);
+}
 
 // -------------  end json.js     -----------------
 
@@ -540,12 +512,25 @@ function call_request_json(){
     }
 }
 
-call_request_json();
+
 
 // -------------  end call_request_json.js  ----
 
+fs.readdir(dataFolder, (err, filenames) => {
+	console.log(filenames);
+	if(typeof filenames != 'undefined'){
+		filenames.forEach(name => {
+	    	var this_mtime = fs.statSync(dataFolder + name).mtime;
+			cache_mtime[name] = this_mtime;
+			cache_filenames.push(name);
+		});
+		call_request_json();
+	}
+});
+
+
 app.listen(3000, () => {
- console.log("Server running on port 3000");
+	console.log("Server running on port 3000");
 });
 
 app.get("/now", (req, res, next) => {
