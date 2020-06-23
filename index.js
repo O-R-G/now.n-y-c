@@ -11,9 +11,9 @@ app.use(cors());
 // var json_js = require('./static/js/json.js');
 // var call_request_json_js = require('./static/js/call_request_json.js');
 
-console.log(__dirname);
 
-var dataFolder = __dirname + 'static/data/';
+
+var dataFolder = __dirname + '/static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
 
@@ -24,6 +24,7 @@ fs.readdir(dataFolder, (err, filenames) => {
 			cache_mtime[name] = this_mtime;
 			cache_filenames.push(name);
 		});
+		console.log('scanning some files');
 		call_request_json();
 	}
 });
@@ -487,7 +488,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 }
 
 function update_cache(cache_filename = '', response, data_type, now_timestamp){
-	var cache_path = 'static/data/'+cache_filename+'.'+data_type;
+	var cache_path = __dirname + '/static/data/'+cache_filename+'.'+data_type;
 	response = JSON.stringify(response);
 	fs.writeFile(cache_path, response, function(err, result) {
 		if(err) console.log('error', err);
@@ -497,7 +498,7 @@ function update_cache(cache_filename = '', response, data_type, now_timestamp){
 }
 	
 function request_cache(cache_filename = '', data_type, results_count = false){
-	var req_url = 'static/data/'+cache_filename+'.'+data_type;
+	var req_url = __dirname + 'static/data/'+cache_filename+'.'+data_type;
 	var this_cache = fs.readFileSync(req_url);
 	this_cache = JSON.parse(this_cache);
 	var this_last_updated = fs.statSync(req_url).mtime;
@@ -528,7 +529,7 @@ function call_request_json(){
 // -------------  end call_request_json.js  ----
 function checkReady(){
 	if(ready_now == ready_full){
-		return true;
+		console.log('got everything');
 	}
 	else
 	{
@@ -536,7 +537,7 @@ function checkReady(){
 		// return false;
 	}
 }
-
+checkReady();
 
 app.listen(3002, () => {
 	console.log("Server running on port 3002");
