@@ -535,13 +535,7 @@ function call_request_json(){
     	request_json(req_array[i]['name'], req_array[i]['req_url'], req_array[i]['data_type'], req_array[i]['results_count'], req_array[i]['use_header'], req_array[i]['cache_lifecycle'] );
     }
 }
-
-
-
 // -------------  end call_request_json.js  ----
-
-
-
 
 app.listen(3002, () => {
 	console.log("Server running on port 3002");
