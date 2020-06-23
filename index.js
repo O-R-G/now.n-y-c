@@ -24,7 +24,6 @@ fs.readdir(dataFolder, (err, filenames) => {
 			cache_mtime[name] = this_mtime;
 			cache_filenames.push(name);
 		});
-		console.log('scanning some files');
 		call_request_json();
 	}
 });
@@ -421,7 +420,6 @@ Date.prototype.addDays = function(days) {
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
-    console.log('request_json');
     var this_mtime = cache_mtime[name+'.'+data_type];
     var now_timestamp = new Date().getTime();
     now_timestamp = parseInt(now_timestamp/1000); // ms to s
@@ -519,44 +517,27 @@ function call_request_json(){
 	now_min = now.minute();
 
     for(var i = 0 ; i < req_array.length ; i++){
-    	console.log(i);
-    	console.log(req_array[i]['name']);
     	if(req_array[i]['name'] == 'train')
     		req_array[i]['req_url'] = "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min;
     	request_json(req_array[i]['name'], req_array[i]['req_url'], req_array[i]['data_type'], req_array[i]['results_count'], req_array[i]['use_header'], req_array[i]['cache_lifecycle'] );
     }
 }
 // -------------  end call_request_json.js  ----
-function checkReady(){
-	if(ready_now == ready_full){
-		console.log('got everything');
-	}
-	else
-	{
-		setTimeout(checkReady, 500);
-		// return false;
-	}
-}
-checkReady();
 
 app.listen(3002, () => {
 	console.log("Server running on port 3002");
 });
 
 app.get("/test", (req, res, next) => {
-	setTimeout(function(){
-		console.log(__dirname);
-		var now = new Date().getTime();    
-		var char_num = 48;
-		var delay_ms = 1000;
-		var screen_interval = 3500;
-		var msgs_length = msgs.length;
-		var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
-		var position = Math.round(now % full_loop_ms);
-		position = parseInt ( position / screen_interval ) * char_num;
+	var now = new Date().getTime();    
+	var char_num = 48;
+	var delay_ms = 1000;
+	var screen_interval = 3500;
+	var msgs_length = msgs.length;
+	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
+	var position = Math.round(now % full_loop_ms);
+	position = parseInt ( position / screen_interval ) * char_num;
 
-		now = now/1000; // seconds since 1970 unix time
-		res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
-	
-	}, 3000);	
+	now = now/1000; // seconds since 1970 unix time
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
 });
