@@ -24,6 +24,19 @@ fs.readdir(dataFolder, (err, filenames) => {
 			cache_filenames.push(name);
 		});
 		call_request_json();
+		app.get("/test", (req, res, next) => {
+			var now = new Date().getTime();    
+			var char_num = 48;
+			var delay_ms = 1000;
+			var screen_interval = 3500;
+			var msgs_length = msgs.length;
+			var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
+			var position = Math.round(now % full_loop_ms);
+			position = parseInt ( position / screen_interval ) * char_num;
+
+			now = now/1000; // seconds since 1970 unix time
+			res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
+		});
 	}
 });
 // --------------  msgs.js -----------------
@@ -531,19 +544,5 @@ function call_request_json(){
 
 
 app.listen(3002, () => {
-	console.log("Server running on port 3000");
-});
-
-app.get("/test", (req, res, next) => {
-	var now = new Date().getTime();    
-	var char_num = 48;
-	var delay_ms = 1000;
-	var screen_interval = 3500;
-	var msgs_length = msgs.length;
-	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
-	var position = Math.round(now % full_loop_ms);
-	position = parseInt ( position / screen_interval ) * char_num;
-
-	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
+	console.log("Server running on port 3002");
 });
