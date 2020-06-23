@@ -16,7 +16,16 @@ var dataFolder = 'static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
 
-
+fs.readdir(dataFolder, (err, filenames) => {
+	if(typeof filenames != 'undefined'){
+		filenames.forEach(name => {
+	    	var this_mtime = fs.statSync(dataFolder + name).mtime;
+			cache_mtime[name] = this_mtime;
+			cache_filenames.push(name);
+		});
+		call_request_json();
+	}
+});
 // --------------  msgs.js -----------------
 // date / time
 
@@ -350,7 +359,6 @@ function shuffle(array) {
 }
 
 function update_msgs(isBeginning = false){
-	// console.log('update_msgs...');
 	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
         return msgs_sections['mid'][key]; 
     }); 
@@ -411,7 +419,7 @@ Date.prototype.addDays = function(days) {
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
-    console.log(hasCache);
+    console.log('request_json');
     var this_mtime = cache_mtime[name+'.'+data_type];
     var now_timestamp = new Date().getTime();
     now_timestamp = parseInt(now_timestamp/1000); // ms to s
@@ -505,7 +513,10 @@ function call_request_json(){
 	now = new Date();
 	now_hr = now.hour();
 	now_min = now.minute();
-    for(i = 0 ; i < req_array.length ; i++){
+
+    for(var i = 0 ; i < req_array.length ; i++){
+    	console.log(i);
+    	console.log(req_array[i]['name']);
     	if(req_array[i]['name'] == 'train')
     		req_array[i]['req_url'] = "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min;
     	request_json(req_array[i]['name'], req_array[i]['req_url'], req_array[i]['data_type'], req_array[i]['results_count'], req_array[i]['use_header'], req_array[i]['cache_lifecycle'] );
@@ -516,24 +527,14 @@ function call_request_json(){
 
 // -------------  end call_request_json.js  ----
 
-fs.readdir(dataFolder, (err, filenames) => {
-	console.log(filenames);
-	if(typeof filenames != 'undefined'){
-		filenames.forEach(name => {
-	    	var this_mtime = fs.statSync(dataFolder + name).mtime;
-			cache_mtime[name] = this_mtime;
-			cache_filenames.push(name);
-		});
-		call_request_json();
-	}
-});
 
 
-app.listen(3000, () => {
+
+app.listen(3002, () => {
 	console.log("Server running on port 3000");
 });
 
-app.get("/now", (req, res, next) => {
+app.get("/test", (req, res, next) => {
 	var now = new Date().getTime();    
 	var char_num = 48;
 	var delay_ms = 1000;
