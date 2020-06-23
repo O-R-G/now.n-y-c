@@ -542,7 +542,7 @@ app.listen(3002, () => {
 });
 
 app.get("/test", (req, res, next) => {
-	if(checkReady()){
+	setTimeout(function(){
 		var now = new Date().getTime();    
 		var char_num = 48;
 		var delay_ms = 1000;
@@ -554,7 +554,6 @@ app.get("/test", (req, res, next) => {
 
 		now = now/1000; // seconds since 1970 unix time
 		res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval});
-	}
 	
-	
+	}, 3000);	
 });
