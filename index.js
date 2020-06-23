@@ -534,7 +534,7 @@ app.get("/test", (req, res, next) => {
 	var delay_ms = 1000;
 	var screen_interval = 3500;
 	var msgs_length = msgs.length;
-	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval + 1;
+	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
 	var position = Math.round(now % full_loop_ms);
 	position = parseInt ( position / screen_interval ) * char_num;
 
