@@ -498,7 +498,7 @@ function update_cache(cache_filename = '', response, data_type, now_timestamp){
 }
 	
 function request_cache(cache_filename = '', data_type, results_count = false){
-	var req_url = __dirname + 'static/data/'+cache_filename+'.'+data_type;
+	var req_url = __dirname + '/static/data/'+cache_filename+'.'+data_type;
 	var this_cache = fs.readFileSync(req_url);
 	this_cache = JSON.parse(this_cache);
 	var this_last_updated = fs.statSync(req_url).mtime;
