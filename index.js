@@ -514,17 +514,13 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
-
-	var test_now = new Date();
-	msgs = msgs_beginning + test_now + msgs_sections['ending'];
-	
 	var char_num = 48;
 	var delay_ms = 1000;
 	var screen_interval = 3600; // 50 ms * 52 + 1000 ms
 	var msgs_length = msgs.length;
 	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
 
-	var position = Math.round(now % full_loop_ms);
+	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
 
 	now = now/1000; // seconds since 1970 unix time
