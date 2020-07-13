@@ -186,10 +186,8 @@ msgs_sections['mid'] = {};
 msgs_sections['ending'] = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.';
 var msgs_break = '///';
 
-// var timer;
-var msg, msg_temp;
-var letters = [];
-var words = [];
+var msgs_beginning = 'NEW YORK CONSOLIDATED                           ';
+// var timer; 
 
 // preventing from the animation starts before data loaded.
 // if ready_now == 0 when an api is loaded, 
@@ -376,7 +374,6 @@ function update_msgs(isBeginning = false){
 
 	msgs_array_temp = msgs_temp;
 	msgs_temp = msgs_temp.join('');
-	// msg_temp = msgs_temp.substr(pointer,columns*rows).split('');
 	msgs_temp = msgs_temp.toUpperCase();
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
@@ -403,20 +400,6 @@ Date.prototype.addDays = function(days) {
     date.setDate(date.getDate() + days);
     return date;
 }
-
-// required and passed from json.php
-// should check if exist and if not give default values
-// var document_root
-// var cache_filenames 
-// var cache_mtime 
-
-// check if a data is already in cache, 
-// if it is, stop requesting cache.
-// but it will keep requesting live once the lifecycle is due.
-// var cache_status = {};
-// for (const p in cache_mtime){
-// 	cache_status[p] = false;
-// }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
@@ -525,11 +508,11 @@ function call_request_json(){
 }
 // -------------  end call_request_json.js  ----
 
-app.listen(3002, () => {
+app.listen(3000, () => {
 	console.log("Server running on port 3002");
 });
 
-app.get("/test", (req, res, next) => {
+app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
 	var char_num = 48;
 	var delay_ms = 1000;
@@ -540,5 +523,5 @@ app.get("/test", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms});
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning});
 });
