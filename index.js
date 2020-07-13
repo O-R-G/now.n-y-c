@@ -515,6 +515,7 @@ app.listen(3000, () => {
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
 	// var now_test = new Date();
+	var now_test = '  1111111111 1111'
 	// msgs = msgs_beginning + now_test + msgs_sections['ending'];
 	var char_num = 48;
 	var delay_ms = 1000;
