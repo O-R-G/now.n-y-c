@@ -514,6 +514,8 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
+	var now_test = new Date();
+	msgs = msgs_beginning + now_test + msgs_sections['ending'];
 	var char_num = 48;
 	var delay_ms = 1000;
 	var screen_interval = 3600; // 50 ms * 52 + 1000 ms
