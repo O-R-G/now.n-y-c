@@ -362,7 +362,8 @@ function shuffle(array) {
 function update_msgs(isBeginning = false){
 	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
         return msgs_sections['mid'][key]; 
-    }); 
+    });
+    
 	if(isBeginning)
 		shuffle(msgs_mid_array);
 
@@ -529,10 +530,10 @@ app.listen(3002, () => {
 });
 
 app.get("/test", (req, res, next) => {
-	var now = new Date().getTime();    
+	var now = new Date().getTime();
 	var char_num = 48;
 	var delay_ms = 1000;
-	var screen_interval = 3500;
+	var screen_interval = 3600; // 50 ms * 52 + 1000 ms
 	var msgs_length = msgs.length;
 	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
 	var position = Math.round(now % full_loop_ms);
