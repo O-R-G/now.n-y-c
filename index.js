@@ -6,13 +6,6 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var app = express();
 app.use(cors());
 
-
-// var msgs_js = require('./static/js/msgs.js');
-// var json_js = require('./static/js/json.js');
-// var call_request_json_js = require('./static/js/call_request_json.js');
-
-
-
 var dataFolder = __dirname + '/static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
@@ -90,14 +83,6 @@ var req_array = [
         'use_header': false,
         'cache_lifecycle': 1
 	}
-	// ,{	
-	// 	'name': 'temp',
-	// 	'req_url': 'https://w1.weather.gov/xml/current_obs/KNYC.xml', 
-	// 	'data_type': 'xml',
- //        'results_count': '',
- //        'use_header': false,
- //        'cache_lifecycle': false
-	// }
 	,{
 		'name':'population',
 		'req_url': 'https://data.cityofnewyork.us/resource/xywu-7bv9.json',
@@ -234,18 +219,6 @@ function handle_msgs(name, response, results_count = false){
         	this_msg += response[i]['descriptor']+' is reported around '+response[i]['landmark']+' ';
         	this_msgs.push( msgs_break+this_msg.toUpperCase()+msgs_break );
         }
-
-	}else if(name == 'temp'){
-		// var oParser = new DOMParser();
-		// var oDOM = oParser.parseFromString(response, "application/xml");
-		// var current = oDOM.getElementsByTagName('weather')[0];
-		// var temp_f = oDOM.getElementsByTagName('temp_f')[0];
-		// var temp_c = oDOM.getElementsByTagName('temp_c')[0];
-		// var wind_string = oDOM.getElementsByTagName('wind_string')[0];
-		// if(typeof temp_f != 'undefined')
-		// 	this_msgs.push( ' Currently ' + temp_f.innerHTML + '°....' + msgs_break );
-		// if(typeof wind_string != 'undefined')
-		// 	this_msgs.push( ' Winds ' + wind_string.innerHTML + msgs_break );
 
 	}
 	else if(name == 'train'){
@@ -418,9 +391,6 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     	request_cache(name, data_type, results_count);
     }
 
-    // var hasCache = false;
-    // request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
-
 }
 
 function request_live(name, request_url, data_type,results_count = false, use_header = true, hasCache, now_timestamp, cache_lifecycle = false){
@@ -432,12 +402,10 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	httpRequest.onreadystatechange = function(){
 		
 		if (httpRequest.readyState === 4) {
-			
 	      if (httpRequest.status === 200) {	
 	      	if(counter > counter_max && hasCache && cache_lifecycle){
 	      		// request_cache(name, data_type, results_count);
 	      	}
-      		
       		if(data_type == 'json'){
       			var response = JSON.parse(httpRequest.responseText);
       		}else if(data_type == 'xml'){
