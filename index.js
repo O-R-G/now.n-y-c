@@ -484,7 +484,7 @@ app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
 	var char_num = 48;
 	var delay_ms = 3000;
-	var screen_interval = 3600; // 50 ms * 52 + 1000 ms
+	var screen_interval = 5600; // 50 ms * 52 + 1000 ms
 	var msgs_length = msgs.length;
 	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
 
