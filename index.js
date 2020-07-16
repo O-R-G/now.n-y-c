@@ -171,8 +171,8 @@ msgs_sections['mid'] = {};
 msgs_sections['ending'] = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.';
 var msgs_break = '///';
 
-var msgs_beginning = 'NEW YORK CONSOLIDATED                           ';
-// var timer; 
+// 	only 47 chars cause one if left for the blinking block
+var msgs_beginning = 'NEW YORK CONSOLIDATED                          '; 
 
 // preventing from the animation starts before data loaded.
 // if ready_now == 0 when an api is loaded, 
