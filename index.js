@@ -489,6 +489,7 @@ app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
 	var now_ny_temp = moment(now);
 	var now_ny_temp2 = now_ny_temp.tz("America/New_York").format();
+	now_ny_temp2 = new Date(now_ny_temp2); 
 	var now_ny = get_time(now_ny_temp2);
 	var char_num = 48;
 	var delay_ms = 3000;
