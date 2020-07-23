@@ -486,8 +486,7 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
-	var now_ny_1 = new Date();
-	var now_ny_2 = moment(now_ny_1);
+	var now_ny_2 = moment(now);
 	var now_ny_3 = now_ny_2.tz("America/New_York").format('ha z');
 	var char_num = 48;
 	var delay_ms = 3000;
