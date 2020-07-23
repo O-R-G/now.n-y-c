@@ -2,6 +2,8 @@ var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var moment = require('moment-timezone');
+moment().tz("America/New_Yrok").format();
 
 var app = express();
 app.use(cors());
@@ -42,8 +44,8 @@ Date.prototype.second = function () {
 }
 
 function get_time(){
-    var d = new Date();
-	return [d.today().toUpperCase(), d.now().toUpperCase()];
+    var d = new Date().toString;
+	return [ Date.parse(d).today().toUpperCase(), Date.parse(d).now().toUpperCase()];
 }
 
 var now = new Date();
