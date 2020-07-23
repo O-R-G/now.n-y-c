@@ -488,13 +488,14 @@ app.get("/now", (req, res, next) => {
 	var screen_interval = 5600; // 50 ms * 52 + 1000 ms
 	var msgs_length = msgs.length;
 	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
-	console.log(new Date());
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
-	if(position == 0){
-		update_msgs_opening();
+	update_msgs_opening();
+	var msgs_opening = msgs_sections['opening'];
+	if(position == 0)
 		update_msgs(true);
-	}
+	else
+		update_msgs();
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning });
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
 });
