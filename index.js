@@ -321,7 +321,8 @@ function handle_msgs(name, response, results_count = false){
 			index = parseInt( response.length * Math.random() );			
 		}
 	}
-	msgs_sections['mid'][name] = this_msgs;
+	var this_msgs_str = this_msgs.join();
+	msgs_sections['mid'][name] = this_msgs_str;
 	
 	update_msgs();
 }
@@ -490,7 +491,10 @@ app.get("/now", (req, res, next) => {
 
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
-
+	if(position == 0){
+		update_msgs_opening();
+		update_msgs(true);
+	}
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning});
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_sections['mid'], msgs_mid: msgs_sections['mid'], msgs_sections['ending']});
 });
