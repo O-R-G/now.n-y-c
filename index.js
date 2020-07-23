@@ -43,8 +43,9 @@ Date.prototype.second = function () {
     return ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 }
 
-function get_time(){
-    var d = new Date();
+function get_time(d = false){
+	if(!d)
+    	var d = new Date();
 	return [d.today().toUpperCase(), d.now().toUpperCase()];
 }
 
@@ -486,7 +487,9 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
-	var now_ny = moment(now).tz("America/New_York").format('ha z');
+	var now_ny_temp = moment(now);
+	var now_ny_temp2 = now_ny_temp.tz("America/New_York").format();
+	var now_ny = get_time(now_ny_temp2);
 	var char_num = 48;
 	var delay_ms = 3000;
 	var screen_interval = 5600; // 50 ms * 52 + 1000 ms
