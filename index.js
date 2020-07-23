@@ -44,8 +44,8 @@ Date.prototype.second = function () {
 }
 
 function get_time(){
-    var d = new Date().toString;
-	return [ Date.parse(d).today().toUpperCase(), Date.parse(d).now().toUpperCase()];
+    var d = new Date();
+	return [d.today().toUpperCase(), d.now().toUpperCase()];
 }
 
 var now = new Date();
@@ -363,7 +363,7 @@ function update_msgs_opening(){
 	msgs_sections['opening'][1] = [];
 	// msgs_sections['opening'][1].push(now_msg[0]); 
 	// msgs_sections['opening'][1].push(now_msg[1]); 
-	msgs_sections['opening'][1].push(now_msg); 
+	msgs_sections['opening'][1].push(now_msg[1]); 
     msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
     msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
 	msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
