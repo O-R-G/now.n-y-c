@@ -360,11 +360,9 @@ function update_msgs(isBeginning = false){
 // update_msgs(): fired every whatever seconds setInverval sets;
 // update_msgs_opening(): fired every time the msgs loop is done;
 function update_msgs_opening(){
-	now_msg = new Date().toString();
 	msgs_sections['opening'][1] = [];
-	// msgs_sections['opening'][1].push(now_msg[0]); 
-	// msgs_sections['opening'][1].push(now_msg[1]); 
-	msgs_sections['opening'][1].push(now_msg); 
+	msgs_sections['opening'][1].push(now_ny[0]); 
+	msgs_sections['opening'][1].push(now_ny[1]); 
     msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
     msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
 	msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
