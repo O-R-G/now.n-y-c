@@ -496,5 +496,5 @@ app.get("/now", (req, res, next) => {
 		update_msgs(true);
 	}
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_sections['mid'], msgs_mid: msgs_sections['mid'], msgs_sections['ending']});
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning });
 });
