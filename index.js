@@ -359,8 +359,9 @@ function update_msgs(isBeginning = false){
 function update_msgs_opening(){
 	now_msg = new Date().toString();
 	msgs_sections['opening'][1] = [];
-	msgs_sections['opening'][1].push(now_msg[0]); 
-	msgs_sections['opening'][1].push(now_msg[1]); 
+	// msgs_sections['opening'][1].push(now_msg[0]); 
+	// msgs_sections['opening'][1].push(now_msg[1]); 
+	msgs_sections['opening'][1].push(now_msg); 
     msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
     msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
 	msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
