@@ -486,8 +486,7 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var now = new Date().getTime();
-	var now_ny_2 = moment(now);
-	var now_ny_3 = now_ny_2.tz("America/New_York").format('ha z');
+	var now_ny = moment(now).tz("America/New_York").format('ha z');
 	var char_num = 48;
 	var delay_ms = 3000;
 	var screen_interval = 5600; // 50 ms * 52 + 1000 ms
@@ -502,5 +501,5 @@ app.get("/now", (req, res, next) => {
 	else
 		update_msgs();
 	now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, now_ny: now_ny_3 });
+	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, now_ny: now_ny });
 });
