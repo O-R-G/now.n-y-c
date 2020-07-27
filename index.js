@@ -486,7 +486,7 @@ app.listen(3000, () => {
 app.get("/now", (req, res, next) => {
 	process.env.TZ = 'America/New_York';
 	var now = new Date().getTime();
-	var now_ny = get_time(now);
+	var now_ny = get_time();
 
 	// var now_ny_temp = moment(now);
 	// var now_ny_temp2 = now_ny_temp.tz("America/New_York").format('YYYY-MM-DD H:mm:s');
