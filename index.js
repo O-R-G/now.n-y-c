@@ -498,8 +498,9 @@ app.get("/now", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'];
-	if(position == 0)
-		update_msgs(true);
+	if(position == 0){
+		msgs = "tata negining";
+	}
 	else
 		update_msgs();
 	now = now/1000; // seconds since 1970 unix time
