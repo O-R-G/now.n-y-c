@@ -336,12 +336,13 @@ function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-function update_msgs(isBeginning = false){
+function update_msgs(shuffle = false){
 	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
         return msgs_sections['mid'][key]; 
     });
     
-	shuffle(msgs_mid_array);
+	if(shuffle)
+		shuffle(msgs_mid_array);
 
 	msgs_temp = [msgs_sections['opening']];
 	for(i = 0 ; i < msgs_mid_array.length ; i++){
@@ -497,7 +498,7 @@ app.get("/now", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'];
-	if(position == 0){
+	if(position == 48){
 		msgs = "tata negining";
 	}
 	else
