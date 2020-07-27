@@ -484,14 +484,17 @@ app.listen(3000, () => {
 });
 
 app.get("/now", (req, res, next) => {
+	process.env.TZ = 'America/New_York';
 	var now = new Date().getTime();
-	var now_ny_temp = moment(now);
-	var now_ny_temp2 = now_ny_temp.tz("America/New_York").format('YYYY-MM-DD H:mm:s');
-	var now_ny_temp3 = new Date(now_ny_temp2); 
-	var now_ny = get_time(now_ny_temp3);
+	var now_ny = get_time(now);
+
+	// var now_ny_temp = moment(now);
+	// var now_ny_temp2 = now_ny_temp.tz("America/New_York").format('YYYY-MM-DD H:mm:s');
+	// var now_ny_temp3 = new Date(now_ny_temp2); 
+	// var now_ny = get_time(now_ny_temp3);
 	var char_num = 48;
-	var delay_ms = 3000;
-	var screen_interval = 5600; // 50 ms * 52 + 1000 ms
+	var delay_ms = 500;
+	var screen_interval = 3100; // 50 ms * 52 + 3000 ms
 	var msgs_length = msgs.length;
 	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
 	var position = now % full_loop_ms;
