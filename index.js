@@ -341,8 +341,7 @@ function update_msgs(isBeginning = false){
         return msgs_sections['mid'][key]; 
     });
     
-	if(isBeginning)
-		shuffle(msgs_mid_array);
+	shuffle(msgs_mid_array);
 
 	msgs_temp = [msgs_sections['opening']];
 	for(i = 0 ; i < msgs_mid_array.length ; i++){
