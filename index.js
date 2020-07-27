@@ -8,6 +8,8 @@ var moment = require('moment-timezone');
 var app = express();
 app.use(cors());
 
+process.env.TZ = 'America/New_York';
+
 var dataFolder = __dirname + '/static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
@@ -484,7 +486,7 @@ app.listen(3000, () => {
 });
 
 app.get("/now", (req, res, next) => {
-	process.env.TZ = 'America/New_York';
+	
 	var now = new Date().getTime();
 	var now_ny = get_time();
 
