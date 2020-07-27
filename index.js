@@ -489,11 +489,6 @@ app.get("/now", (req, res, next) => {
 	
 	var now = new Date().getTime();
 	var now_ny = get_time();
-
-	// var now_ny_temp = moment(now);
-	// var now_ny_temp2 = now_ny_temp.tz("America/New_York").format('YYYY-MM-DD H:mm:s');
-	// var now_ny_temp3 = new Date(now_ny_temp2); 
-	// var now_ny = get_time(now_ny_temp3);
 	var char_num = 48;
 	var delay_ms = 500;
 	var screen_interval = 3100; // 50 ms * 52 + 3000 ms
