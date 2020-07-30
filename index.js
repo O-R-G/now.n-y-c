@@ -341,29 +341,27 @@ function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-function update_msgs(){
-	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
-        return msgs_sections['mid'][key]; 
-    });
+// function update_msgs(){
+// 	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
+//         return msgs_sections['mid'][key]; 
+//     });
 
-	msgs_temp = [msgs_sections['opening']];
-	for(i = 0 ; i < msgs_mid_array.length ; i++){
-		for(j = 0 ; j < msgs_mid_array[i].length ; j++)
-			msgs_temp.push(msgs_mid_array[i][j]);
-	}
-	msgs_temp.push(msgs_sections['ending']);
+// 	msgs_temp = [msgs_sections['opening']];
+// 	for(i = 0 ; i < msgs_mid_array.length ; i++){
+// 		for(j = 0 ; j < msgs_mid_array[i].length ; j++)
+// 			msgs_temp.push(msgs_mid_array[i][j]);
+// 	}
+// 	msgs_temp.push(msgs_sections['ending']);
 
-	msgs_array_temp = msgs_temp;
-	msgs_temp = msgs_temp.join('');
-	msgs_temp = msgs_temp.toUpperCase();
-	msgs_temp = msgs_temp.split('');
-	msgs = msgs_temp.join('');
-}
-function paste_msgs(sequence){
+// 	msgs_array_temp = msgs_temp;
+// 	msgs_temp = msgs_temp.join('');
+// 	msgs_temp = msgs_temp.toUpperCase();
+// 	msgs_temp = msgs_temp.split('');
+// 	msgs = msgs_temp.join('');
+// }
+function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
-	console.log('paste_msgs');
-	console.log(sequence);
-	console.log('mid = '+msgs_sections['mid']);
+	console.log('mid = '+msgs_sections);
 	for(i = 0; i < sequence['sequence'].length; i++){
 		var this_key = sequence['sequence'][i];
 		console.log(this_key);
@@ -534,7 +532,7 @@ app.get("/now", (req, res, next) => {
 			if(err) console.log('error', err);
 		});
 	}
-	paste_msgs(sequence);
+	paste_msgs();
 	console.log(msgs);
 	now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
