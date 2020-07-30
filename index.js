@@ -151,7 +151,9 @@ var req_array = [
 ];
 
 var sequence = fs.readFileSync(__dirname+'/static/sequence.json');
+sequence = JSON.parse(sequence);
 console.log(sequence);
+if()
 
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
