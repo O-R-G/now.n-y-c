@@ -157,6 +157,7 @@ var sequence_key = sequence['key'];
 var sequence_sequence = sequence['sequence'];
 console.log('sequence_sequence = '+sequence_sequence);
 console.log('isArray? = '+Array.isArray(sequence_sequence));
+console.log('length = '+sequence_sequence.length);
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
 	msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
