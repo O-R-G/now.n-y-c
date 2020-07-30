@@ -527,7 +527,7 @@ app.get("/now", (req, res, next) => {
 
 		sequence['key'] = this_key;
 		sequence['sequence'] = shuffle(sequence['sequence']);
-		console.log()
+		console.log('shuffled sequence = '+sequence['sequence']);
 		var sequence_update = JSON.stringify(sequence);
 		fs.writeFile(sequence_path, sequence_update, function(err, result) {
 			if(err) console.log('error', err);
