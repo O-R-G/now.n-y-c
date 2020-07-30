@@ -26,7 +26,7 @@ fs.readdir(dataFolder, (err, filenames) => {
 });
 // --------------  msgs.js -----------------
 // date / time
-
+console.log('hi');
 Date.prototype.today = function () { 
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -411,11 +411,13 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	      	if(counter > counter_max && hasCache && cache_lifecycle){
 	      		// request_cache(name, data_type, results_count);
 	      	}
+
       		if(data_type == 'json'){
       			var response = JSON.parse(httpRequest.responseText);
       		}else if(data_type == 'xml'){
       			var response = httpRequest.responseText;
       		}
+      		console.log('live response'+response);
       		if(response){
       			now_timestamp = new Date().getTime();
     			now_timestamp = parseInt(now_timestamp/1000); // ms to s
