@@ -154,8 +154,8 @@ var sequence_path = __dirname+'/static/sequence.json';
 var sequence = fs.readFileSync(sequence_path);
 sequence = JSON.parse(sequence);
 var sequence_key = sequence['key'];
-var sequence_sequence = sequence['sequence'];
-
+var sequence_sequence = JSON.stringify(sequence['sequence']);
+sequence_sequence = JSON.parse(sequence_sequence);
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
 	msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
