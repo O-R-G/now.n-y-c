@@ -152,7 +152,7 @@ var req_array = [
 
 var sequence_path = __dirname+'/static/sequence.json';
 var sequence = fs.readFileSync(sequence_path);
-console.log('sequence = '+sequence);
+sequence = JSON.parse(sequence);
 
 
 var now_msg = get_time();
@@ -359,11 +359,9 @@ function shuffle(array) {
 // }
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
-	console.log('sequence = '+sequence);
-	var sequence_temp = JSON.parse(sequence);
 	
-	for(i = 0; i < sequence_temp['sequence'].length; i++){
-		var this_key = sequence_temp['sequence'][i];
+	for(i = 0; i < sequence['sequence'].length; i++){
+		var this_key = sequence['sequence'][i];
 		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
 			msgs_temp.push(msgs_sections['mid'][this_key][j]);
 		}
@@ -536,7 +534,6 @@ app.get("/now", (req, res, next) => {
 		});
 	}
 	paste_msgs();
-	console.log(msgs);
 	now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
 });
