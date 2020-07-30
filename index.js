@@ -150,7 +150,7 @@ var req_array = [
 	
 ];
 
-var sequence = fs.readFileSync(__dirname.'/static/sequence.json');
+var sequence = fs.readFileSync(__dirname+'/static/sequence.json');
 console.log(sequence);
 
 var now_msg = get_time();
