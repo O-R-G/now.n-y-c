@@ -337,6 +337,7 @@ function handle_msgs(name, response, results_count = false){
 }
 
 function shuffle(array) {
+	console.log('array = '+array);
     array.sort(() => Math.random() - 0.5);
 }
 
