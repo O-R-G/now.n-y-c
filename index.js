@@ -523,9 +523,13 @@ app.get("/now", (req, res, next) => {
 	var msgs_opening = msgs_sections['opening'];
 
 	var this_key = parseInt(now/full_loop_ms);
+	console.log('this_key = '+this_key);
+	console.log('old key = '+sequence['key']);
 	if( sequence['key'] < this_key){
+
 		sequence['key'] = this_key;
 		sequence['sequence'] = shuffle(sequence['sequence']);
+		console.log()
 		var sequence_update = JSON.stringify(sequence);
 		fs.writeFile(sequence_path, sequence_update, function(err, result) {
 			if(err) console.log('error', err);
