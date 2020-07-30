@@ -333,8 +333,6 @@ function handle_msgs(name, response, results_count = false){
 	}
 	var this_msgs_str = this_msgs.join();
 	msgs_sections['mid'][name] = this_msgs_str;
-	console.log(msgs_sections['mid']);
-	// update_msgs();
 }
 
 function shuffle(array) {
@@ -361,9 +359,10 @@ function shuffle(array) {
 // }
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
-	console.log('sequence.sq = '+sequence['sequence']);
-	for(i = 0; i < sequence['sequence'].length; i++){
-		var this_key = sequence['sequence'][i];
+	console.log('sequence = '+sequence);
+	console.log('sequence.sq = '+sequence.sequence);
+	for(i = 0; i < sequence.sequence.length; i++){
+		var this_key = sequence.sequence[i];
 		console.log(this_key);
 		console.log(msgs_sections['mid']);
 
