@@ -150,10 +150,10 @@ var req_array = [
 	
 ];
 
-var sequence = fs.readFileSync(__dirname+'/static/sequence.json');
+var sequence_path = __dirname+'/static/sequence.json';
+var sequence = fs.readFileSync(sequence_path);
 sequence = JSON.parse(sequence);
-console.log(sequence);
-if()
+
 
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
@@ -334,25 +334,38 @@ function handle_msgs(name, response, results_count = false){
 	var this_msgs_str = this_msgs.join();
 	msgs_sections['mid'][name] = this_msgs_str;
 	
-	update_msgs();
+	// update_msgs();
 }
 
 function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-function update_msgs(shuffle = false){
+function update_msgs(){
 	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
         return msgs_sections['mid'][key]; 
     });
-    
-	if(shuffle)
-		shuffle(msgs_mid_array);
 
 	msgs_temp = [msgs_sections['opening']];
 	for(i = 0 ; i < msgs_mid_array.length ; i++){
 		for(j = 0 ; j < msgs_mid_array[i].length ; j++)
 			msgs_temp.push(msgs_mid_array[i][j]);
+	}
+	msgs_temp.push(msgs_sections['ending']);
+
+	msgs_array_temp = msgs_temp;
+	msgs_temp = msgs_temp.join('');
+	msgs_temp = msgs_temp.toUpperCase();
+	msgs_temp = msgs_temp.split('');
+	msgs = msgs_temp.join('');
+}
+function paste_msgs(){
+	msgs_temp = [msgs_sections['opening']];
+	for(i = 0; i < sequence['sequence'].length; i++){
+		var this_key = sequence['sequence'][i];
+		for(j = 0; j<msgs_sections['mid'][this_key].length; j++){
+			msgs_temp.push(msgs_sections['mid'][this_key][j]);
+		}
 	}
 	msgs_temp.push(msgs_sections['ending']);
 
@@ -505,11 +518,18 @@ app.get("/now", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'];
-	if(position == 48){
-		msgs = "tata negining";
+
+	var this_key = parseInt(now/full_loop_ms);
+	if( sequence['key'] < this_key){
+		sequence['key'] = this_key;
+		sequence['sequence'] = shuffle(sequence['sequence']);
+		sequence = JSON.stringify(sequence);
+		fs.writeFile(sequence_path, sequence, function(err, result) {
+			if(err) console.log('error', err);
+		});
 	}
-	else
-		update_msgs();
+	paste_msgs();
+	console.log(msgs);
 	now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
 });
