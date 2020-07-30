@@ -359,9 +359,9 @@ function shuffle(array) {
 // }
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
-	
-	for(i = 0; i < sequence['sequence'].length; i++){
-		var this_key = sequence['sequence'][i];
+	var sequence_temp = JSON.parse(sequence);
+	for(i = 0; i < sequence_temp['sequence'].length; i++){
+		var this_key = sequence_temp['sequence'][i];
 		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
 			msgs_temp.push(msgs_sections['mid'][this_key][j]);
 		}
