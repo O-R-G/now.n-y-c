@@ -360,21 +360,16 @@ function shuffle(array) {
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
 	console.log('sequence = '+sequence);
-	// var sequence_temp = JSON.parse(sequence);
+	var sequence_temp = JSON.parse(sequence);
 	
-	// for(i = 0; i < sequence_temp['sequence'].length; i++){
-	// 	var this_key = sequence_temp['sequence'][i];
-	// 	for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
-	// 		msgs_temp.push(msgs_sections['mid'][this_key][j]);
-	// 	}
-	// }
-
-	for(i = 0; i < sequence['sequence'].length; i++){
-		var this_key = sequence['sequence'][i];
+	for(i = 0; i < sequence_temp['sequence'].length; i++){
+		var this_key = sequence_temp['sequence'][i];
 		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
 			msgs_temp.push(msgs_sections['mid'][this_key][j]);
 		}
 	}
+
+	
 	msgs_temp.push(msgs_sections['ending']);
 
 	msgs_array_temp = msgs_temp;
