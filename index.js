@@ -361,7 +361,7 @@ function shuffle(array) {
 // }
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
-	console.log('mid = '+msgs_sections);
+	console.log('sequence = '+sequence);
 	for(i = 0; i < sequence['sequence'].length; i++){
 		var this_key = sequence['sequence'][i];
 		console.log(this_key);
