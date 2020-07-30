@@ -360,6 +360,7 @@ function shuffle(array) {
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
 	console.log('sequence = '+sequence);
+	console.log('sequencekey = '+sequence['key']);
 	console.log('sequence.sq = '+sequence.sequence);
 	for(i = 0; i < sequence.sequence.length; i++){
 		var this_key = sequence.sequence[i];
