@@ -151,7 +151,9 @@ var req_array = [
 ];
 
 var sequence_path = __dirname+'/static/sequence.json';
+console.log('sequence_path = '+sequence_path);
 var sequence = fs.readFileSync(sequence_path);
+console.log('sequence = '+sequence);
 sequence = JSON.parse(sequence);
 console.log('sequence = '+sequence);
 
