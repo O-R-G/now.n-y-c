@@ -151,7 +151,6 @@ var req_array = [
 ];
 
 var sequence_path = __dirname+'/static/sequence.json';
-console.log('sequence_path = '+sequence_path);
 var sequence = fs.readFileSync(sequence_path);
 console.log('sequence = '+sequence);
 
@@ -362,9 +361,15 @@ function update_msgs(){
 }
 function paste_msgs(sequence){
 	msgs_temp = [msgs_sections['opening']];
+	console.log('paste_msgs');
+	console.log(sequence);
+	console.log('mid = '+msgs_sections['mid']);
 	for(i = 0; i < sequence['sequence'].length; i++){
 		var this_key = sequence['sequence'][i];
-		for(j = 0; j<msgs_sections['mid'][this_key].length; j++){
+		console.log(this_key);
+		console.log(msgs_sections['mid'][this_key]);
+
+		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
 			msgs_temp.push(msgs_sections['mid'][this_key][j]);
 		}
 	}
