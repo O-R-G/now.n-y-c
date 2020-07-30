@@ -333,7 +333,7 @@ function handle_msgs(name, response, results_count = false){
 	}
 	var this_msgs_str = this_msgs.join();
 	msgs_sections['mid'][name] = this_msgs_str;
-	
+	console.log(msgs_sections['mid']);
 	// update_msgs();
 }
 
@@ -365,7 +365,7 @@ function paste_msgs(){
 	for(i = 0; i < sequence['sequence'].length; i++){
 		var this_key = sequence['sequence'][i];
 		console.log(this_key);
-		console.log(msgs_sections['mid'][this_key]);
+		console.log(msgs_sections['mid']);
 
 		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
 			msgs_temp.push(msgs_sections['mid'][this_key][j]);
