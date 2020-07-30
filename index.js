@@ -150,6 +150,9 @@ var req_array = [
 	
 ];
 
+var sequence = fs.readFileSync(__dirname.'/static/sequence.json');
+console.log(sequence);
+
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
 	msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
