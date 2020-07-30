@@ -529,6 +529,7 @@ app.get("/now", (req, res, next) => {
 
 		sequence_key = this_key;
 		shuffle(sequence_sequence);
+		console.log(sequence_sequence);
 		var sequence_update = {
 			'key':sequence_key,
 			'sequence':sequence_sequence
