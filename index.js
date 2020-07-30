@@ -521,8 +521,7 @@ app.get("/now", (req, res, next) => {
 	var msgs_opening = msgs_sections['opening'];
 
 	var this_key = parseInt(now/full_loop_ms);
-	console.log('this_key = '+this_key);
-	console.log('old key = '+sequence['key']);
+	
 	if( sequence['key'] < this_key){
 
 		sequence['key'] = this_key;
@@ -532,6 +531,7 @@ app.get("/now", (req, res, next) => {
 		fs.writeFile(sequence_path, sequence_update, function(err, result) {
 			if(err) console.log('error', err);
 		});
+		console.log(sequence);
 	}
 	paste_msgs();
 	now = now/1000; // seconds since 1970 unix time
