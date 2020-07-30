@@ -522,16 +522,20 @@ app.get("/now", (req, res, next) => {
 
 	var this_key = parseInt(now/full_loop_ms);
 	
-	if( sequence['key'] < this_key){
+	if( sequence_key < this_key){
 
-		sequence['key'] = this_key;
+		sequence_key = this_key;
 		sequence_sequence = shuffle(sequence_sequence);
 		console.log('shuffled sequence = '+sequence_sequence);
-		var sequence_update = JSON.stringify(sequence);
+		var sequence_update = {
+			'key':sequence_key,
+			'sequence':sequence_sequence
+		}
+		sequence_update = JSON.stringify(sequence_update);
 		fs.writeFile(sequence_path, sequence_update, function(err, result) {
 			if(err) console.log('error', err);
 		});
-		console.log(sequence);
+		
 	}
 	paste_msgs();
 	now = now/1000; // seconds since 1970 unix time
