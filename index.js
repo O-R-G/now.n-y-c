@@ -153,7 +153,7 @@ var req_array = [
 var sequence_path = __dirname+'/static/sequence.json';
 var sequence = fs.readFileSync(sequence_path);
 sequence = JSON.parse(sequence);
-
+console.log('sequence = '+sequence);
 
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
@@ -359,7 +359,7 @@ function update_msgs(){
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
 }
-function paste_msgs(){
+function paste_msgs(sequence){
 	msgs_temp = [msgs_sections['opening']];
 	for(i = 0; i < sequence['sequence'].length; i++){
 		var this_key = sequence['sequence'][i];
@@ -528,7 +528,7 @@ app.get("/now", (req, res, next) => {
 			if(err) console.log('error', err);
 		});
 	}
-	paste_msgs();
+	paste_msgs(sequence);
 	console.log(msgs);
 	now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
