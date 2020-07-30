@@ -528,7 +528,7 @@ app.get("/now", (req, res, next) => {
 	if( sequence_key < this_key){
 
 		sequence_key = this_key;
-		sequence_sequence = shuffle(sequence_sequence);
+		// sequence_sequence = shuffle(sequence_sequence);
 		var sequence_update = {
 			'key':sequence_key,
 			'sequence':sequence_sequence
