@@ -154,7 +154,7 @@ var sequence_path = __dirname+'/static/sequence.json';
 var sequence = fs.readFileSync(sequence_path);
 sequence = JSON.parse(sequence);
 var sequence_key = sequence['key'];
-var sequence_sequence = JSON.stringify(sequence['sequence']);
+var sequence_sequence = sequence['sequence'];
 
 var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
