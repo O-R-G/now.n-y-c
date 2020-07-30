@@ -362,7 +362,7 @@ function paste_msgs(){
 	console.log('sequence = '+sequence);
 	var sequence_temp = JSON.parse(sequence);
 	console.log('sequence_temp = '+sequence_temp);
-	console.log('sequencekey = '+sequence_temp['key'];
+	console.log('sequencekey = '+sequence_temp['key']);
 	console.log('sequence.sq = '+sequence.sequence);
 	for(i = 0; i < sequence.sequence.length; i++){
 		var this_key = sequence.sequence[i];
