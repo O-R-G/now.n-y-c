@@ -153,6 +153,7 @@ var req_array = [
 var sequence_path = __dirname+'/static/sequence.json';
 var sequence = fs.readFileSync(sequence_path);
 sequence = JSON.parse(sequence);
+var sequence_key = sequence['key'];
 var sequence_sequence = JSON.stringify(sequence['sequence']);
 
 var now_msg = get_time();
@@ -359,9 +360,8 @@ function shuffle(array) {
 // }
 function paste_msgs(){
 	msgs_temp = [msgs_sections['opening']];
-	var sequence_temp = JSON.parse(sequence);
-	for(i = 0; i < sequence_temp['sequence'].length; i++){
-		var this_key = sequence_temp['sequence'][i];
+	for(i = 0; i < sequence_sequence.length; i++){
+		var this_key = sequence_sequence[i];
 		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
 			msgs_temp.push(msgs_sections['mid'][this_key][j]);
 		}
@@ -525,8 +525,8 @@ app.get("/now", (req, res, next) => {
 	if( sequence['key'] < this_key){
 
 		sequence['key'] = this_key;
-		sequence['sequence'] = shuffle(sequence['sequence']);
-		console.log('shuffled sequence = '+sequence['sequence']);
+		sequence_sequence = shuffle(sequence_sequence);
+		console.log('shuffled sequence = '+sequence_sequence);
 		var sequence_update = JSON.stringify(sequence);
 		fs.writeFile(sequence_path, sequence_update, function(err, result) {
 			if(err) console.log('error', err);
