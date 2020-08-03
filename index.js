@@ -521,7 +521,8 @@ app.get("/now", (req, res, next) => {
 	sequence = JSON.parse(sequence);
 	var sequence_key = sequence['key'];
 	var sequence_sequence = sequence['sequence'];
-
+	console.log('full_loop_ms = '+full_loop_ms);
+	console.log('now = '+now);
 	var this_key = parseInt(now/full_loop_ms);
 	console.log('this_key = '+this_key);
 	console.log('sequence_key = '+sequence_key);
