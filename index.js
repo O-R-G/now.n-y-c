@@ -529,11 +529,13 @@ app.get("/now", (req, res, next) => {
 
 		console.log('sequence_key < this_key, time to update');
 		sequence_key = this_key;
+		console.log('before shuffle'+sequence_sequence);
 		shuffle(sequence_sequence);
 		var sequence_update = {
 			'key':sequence_key,
 			'sequence':sequence_sequence
 		}
+		console.log('after shuffle'+sequence_sequence);
 		sequence_update = JSON.stringify(sequence_update);
 		fs.writeFile(sequence_path, sequence_update, function(err, result) {
 			if(err) console.log('error', err);
