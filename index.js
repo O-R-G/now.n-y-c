@@ -505,6 +505,7 @@ app.listen(3000, () => {
 app.get("/now", (req, res, next) => {
 	
 	var now = new Date().getTime();
+	console.log(now+' requested');
 	var now_ny = get_time();
 	var char_num = 48;
 	var delay_ms = 3000;
