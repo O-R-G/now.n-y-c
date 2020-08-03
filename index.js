@@ -548,6 +548,6 @@ app.get("/now", (req, res, next) => {
 		console.log('sequence_key == this_key');
 	}
 	paste_msgs(sequence_sequence);
-	now = now/1000; // seconds since 1970 unix time
+	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
 });
