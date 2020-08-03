@@ -155,8 +155,7 @@ var now_msg = get_time();
 var msgs = 'initial', // the final msgs for display. array of letters
 	msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
 	msgs_temp = []; // the intermediate msgs to hold updated msgs, and wait until the current frame is settled. 
-var msgs_array = [], 
-	msgs_array_temp = [];
+var msgs_array = [];
 
 msgs_sections['opening'] = [];
 msgs_sections['opening'][0] = [];
@@ -191,21 +190,21 @@ function handle_msgs(name, response, results_count = false){
 	if(results_count == '')
 		results_count = false;
 	var response = response;
-	var this_msgs = [];
+	var this_msgs = '';
 	// opening msg for each section;
 	if(name == 'new-york-times'){
 		// console.log('updaing new-york-times');
-		this_msgs = [' from the NYTimes : ' + msgs_break ];
+		this_msgs = ' from the NYTimes : ' + msgs_break ;
 		response = response['results'] ;
 		for(i = 0 ; i < results_count ; i++){
 			var this_msg = response[i]['title'];
 			if(typeof this_msg != 'undefined')
-				this_msgs.push(this_msg+msgs_break);
+				this_msgs += (this_msg+msgs_break);
 		}
 
 	}else if(name == 'covidtracking'){
 		// console.log('updaing covidtracking');
-		this_msgs.push(' from covidtracking.com : ' + msgs_break);
+		this_msgs = ' from covidtracking.com : ' + msgs_break;
 		for(i = 0 ; i < response.length ; i++){
 			if(response[i]['state'] == 'NY'){
 				response = response[i];
@@ -213,37 +212,36 @@ function handle_msgs(name, response, results_count = false){
 			}
 		}
 		if(typeof response['positive'] != 'undefined')
-			this_msgs.push('Positive cases: '+response['positive'] + msgs_break+' ');
+			this_msgs += 'Positive cases: '+response['positive'] + msgs_break+' ';
 		if(typeof response['negative'] != 'undefined')
-			this_msgs.push('Negative cases: '+response['negative'] + msgs_break+' ');
+			this_msgs += 'Negative cases: '+response['negative'] + msgs_break+' ';
 		if(typeof response['hospitalizedCurrently'] != 'undefined')
-			this_msgs.push('Currently hospitalized cases: '+response['hospitalizedCurrently'] + msgs_break+' ');
+			this_msgs += 'Currently hospitalized cases: '+response['hospitalizedCurrently'] + msgs_break+' ';
 
 	}else if(name == '311'){
 		for(i = 0 ; i < response.length ; i++){
         	var this_msg = ' from '+response[i]['agency']+': ';
         	this_msg += response[i]['descriptor']+' is reported around '+response[i]['landmark']+' ';
-        	this_msgs.push( msgs_break+this_msg.toUpperCase()+msgs_break );
+        	this_msgs += msgs_break+this_msg+msgs_break;
         }
 
 	}
 	else if(name == 'train'){
-		this_msgs = [' There is a train arriving now at : ' + response['result'][0]['name'] + ". " + msgs_break ];
+		this_msgs = ' There is a train arriving now at : ' + response['result'][0]['name'] + msgs_break;
 	}
 	else if(name == 'population'){
 		// console.log(response[0]);
-		this_msgs = [' Total population in NYC: ' + response[0]['_2020']+". " + msgs_break ];
+		this_msgs = ' Total population in NYC: ' + response[0]['_2020']+". " + msgs_break;
 		for(i = 1 ; i <response.length ; i++ ){
-			this_msgs.push(' Population in ' + response[i]['borough'].replace('   ', '') + ": " + response[i]['_2020']+"("+response[i]['_2020_boro_share_of_nyc_total']+"%)"+msgs_break );
+			this_msgs += ' Population in ' + response[i]['borough'].replace('   ', '') + ": " + response[i]['_2020']+"("+response[i]['_2020_boro_share_of_nyc_total']+"%)"+msgs_break;
 		}
 	}
 	else if(name == 'hotspot'){
 		var index = parseInt( response.length * Math.random() );
 		var data_count = 0;
-		this_msgs = [];
 		while(data_count < 1){			
 			if(response[index]['type'] == 'Free'){
-				this_msgs.push(' Free public hotspot "'+response[index]['ssid']+'" at '+response[index]['location']);
+				this_msgs += ' Free public hotspot "'+response[index]['ssid']+'" at '+response[index]['location'];
 				data_count++;
 			}
 			index = parseInt( response.length * Math.random() );
@@ -253,12 +251,11 @@ function handle_msgs(name, response, results_count = false){
 		var index = parseInt( response.length * Math.random() );
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
-		this_msgs = [];
-		this_msgs = [' From DOHMH New York City Restaurant Inspection Results : ' ];
+		this_msgs += ' From DOHMH New York City Restaurant Inspection Results : ';
 		
 		while(data_count < results_count){
 			if(response[index]['critical_flag'] == 'N' && response[index]['grade'] == 'A'){
-				this_msgs.push(response[index]['dba'] + ' on '+ response[index]['street']+' is graded as A. '+msgs_break);
+				this_msgs += response[index]['dba'] + ' on '+ response[index]['street']+' is graded as A. '+msgs_break;
 				data_count++;
 			}
 			index = parseInt( response.length * Math.random() );			
@@ -268,11 +265,10 @@ function handle_msgs(name, response, results_count = false){
 		var index = parseInt( response.length * Math.random() );
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
-		this_msgs = [];
-		this_msgs = [' Street Tree in NYC : '];
+		this_msgs += ' Street Tree in NYC : ';
 		
 		while(data_count < results_count){
-			this_msgs.push(response[index]['spc_common'] + ' on '+ response[index]['address']+'. Diameter at Breast Height: '+response[index]['tree_dbh']+' in. '+msgs_break);
+			this_msgs += response[index]['spc_common'] + ' on '+ response[index]['address']+'. Diameter at Breast Height: '+response[index]['tree_dbh']+' in. '+msgs_break;
 			data_count++;
 			index = parseInt( response.length * Math.random() );			
 		}
@@ -293,20 +289,18 @@ function handle_msgs(name, response, results_count = false){
 		}else{
 			level = 'Hazardous';
 		}
-		this_msgs = [];
-		this_msgs = [' Air Quality Index in New York : ' ];
+		this_msgs += ' Air Quality Index in New York : ' ;
 		
-		this_msgs.push(aqi + ' ('+ level+') '+msgs_break);
+		this_msgs += aqi + ' ('+ level+') '+msgs_break;
 	}
 	else if(name == 'energy-efficiency-projects'){
 		var index = parseInt( response.length * Math.random() );
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
-		this_msgs = [];
-		this_msgs = [" The City's Energy Efficiency Projects: " ];
+		this_msgs += " The City's Energy Efficiency Projects: ";
 		while(data_count < results_count){
 			if(response[index]['projectsitename'] && response[index]['primaryprojecttype']!='Other'){
-				this_msgs.push(response[index]['primaryprojecttype'] + ' for '+ response[index]['projectsitename']+'. Status: '+response[index]['projectstatus']+' '+msgs_break);
+				this_msgs += response[index]['primaryprojecttype'] + ' for '+ response[index]['projectsitename']+'. Status: '+response[index]['projectstatus']+' '+msgs_break;
 				data_count++;
 			}
 			index = parseInt( response.length * Math.random() );			
@@ -316,57 +310,32 @@ function handle_msgs(name, response, results_count = false){
 		var index = parseInt( response.length * Math.random() );
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
-		this_msgs = [];
-		this_msgs = [" From DCA : Legally Operating Businesses License issued to" ];
+		this_msgs += " From DCA : Legally Operating Businesses License issued to";
 		
 		while(data_count < results_count){
 			if(response[index]['status']=='Issued'){
-				this_msgs.push(response[index]['business_name']+' '+msgs_break);
+				this_msgs += response[index]['business_name']+' '+msgs_break;
 				data_count++;
 			}
 			index = parseInt( response.length * Math.random() );			
 		}
 	}
-	var this_msgs_str = this_msgs.join();
-	msgs_sections['mid'][name] = this_msgs_str;
+
+	msgs_sections['mid'][name] = this_msgs;
+
 }
 
 function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-// function update_msgs(){
-// 	msgs_mid_array = Object.keys(msgs_sections['mid']).map(function (key) { 
-//         return msgs_sections['mid'][key]; 
-//     });
-
-// 	msgs_temp = [msgs_sections['opening']];
-// 	for(i = 0 ; i < msgs_mid_array.length ; i++){
-// 		for(j = 0 ; j < msgs_mid_array[i].length ; j++)
-// 			msgs_temp.push(msgs_mid_array[i][j]);
-// 	}
-// 	msgs_temp.push(msgs_sections['ending']);
-
-// 	msgs_array_temp = msgs_temp;
-// 	msgs_temp = msgs_temp.join('');
-// 	msgs_temp = msgs_temp.toUpperCase();
-// 	msgs_temp = msgs_temp.split('');
-// 	msgs = msgs_temp.join('');
-// }
 function paste_msgs(sequence_sequence){
-	msgs_temp = [msgs_sections['opening']];
+	msgs_temp = msgs_sections['opening'];
 	for(i = 0; i < sequence_sequence.length; i++){
 		var this_key = sequence_sequence[i];
-		for(j = 0; j< msgs_sections['mid'][this_key].length; j++){
-			msgs_temp.push(msgs_sections['mid'][this_key][j]);
-		}
+		msgs_temp += msgs_sections['mid'][this_key];
 	}
-
-	
-	msgs_temp.push(msgs_sections['ending']);
-
-	msgs_array_temp = msgs_temp;
-	msgs_temp = msgs_temp.join('');
+	msgs_temp += msgs_sections['ending'];
 	msgs_temp = msgs_temp.toUpperCase();
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
@@ -523,13 +492,9 @@ app.get("/now", (req, res, next) => {
 	var sequence_sequence = sequence['sequence'];
 	var this_key = parseInt(now/full_loop_ms);
 	
-	if( sequence_key < this_key){
-		console.log('sequence_key < this_key, time to update');
-		console.log('before shuffle '+sequence_sequence);
-		console.log('first item in sequence '+sequence_sequence[0]);
+	if( sequence_key < this_key)
 		shuffle(sequence_sequence);
-		console.log('after shuffle '+sequence_sequence);
-	}
+	
 	sequence_key = this_key;
 	var sequence_update = {
 		'key':sequence_key,
