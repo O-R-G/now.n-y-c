@@ -524,12 +524,12 @@ app.get("/now", (req, res, next) => {
 	var sequence_sequence = sequence['sequence'];
 
 	var this_key = parseInt(now/full_loop_ms);
-	
+	console.log('this_key = '+this_key);
 	if( sequence_key < this_key){
 
+		console.log('sequence_key < this_key, time to update');
 		sequence_key = this_key;
 		shuffle(sequence_sequence);
-		console.log(sequence_sequence);
 		var sequence_update = {
 			'key':sequence_key,
 			'sequence':sequence_sequence
@@ -539,6 +539,9 @@ app.get("/now", (req, res, next) => {
 			if(err) console.log('error', err);
 		});
 		
+	}
+	else if(sequence_key == this_key){
+		console.log('sequence_key == this_key');
 	}
 	paste_msgs(sequence_sequence);
 	now = now/1000; // seconds since 1970 unix time
