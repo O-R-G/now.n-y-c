@@ -1,3 +1,4 @@
+process.env.TZ = 'America/New_York';
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
@@ -8,7 +9,7 @@ var moment = require('moment-timezone');
 var app = express();
 app.use(cors());
 
-process.env.TZ = 'America/New_York';
+
 
 var dataFolder = __dirname + '/static/data/';
 var cache_mtime = {};
@@ -61,7 +62,7 @@ var req_array = [
 		'data_type': 'json',
         'results_count': 3,
         'use_header': false,
-        'cache_lifecycle': 1
+        'cache_lifecycle': 10
 	}
 	,{	
 		'name': 'covidtracking',
