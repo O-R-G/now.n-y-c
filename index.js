@@ -354,17 +354,18 @@ Date.prototype.addDays = function(days) {
 }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
+    console.log('=====  '+name+'  =====');
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
-    console.log('hasCache: '+hasCache);
     var this_mtime = cache_mtime[name+'.'+data_type];
-    console.log('this_mtime: '+this_mtime);
+    this_mtime = parseInt(this_mtime/1000);
     var now_timestamp = new Date().getTime();
     now_timestamp = parseInt(now_timestamp/1000); // ms to s
     if(cache_lifecycle){
     	cache_lifecycle = cache_lifecycle * 60;
     }
-    console.log('cache_lifecycle: '+cache_lifecycle);
+    console.log('this_mtime: '+this_mtime);
+    console.log('now_timestamp: '+now_timestamp);
     console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
