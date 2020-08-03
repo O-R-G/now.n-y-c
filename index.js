@@ -521,33 +521,30 @@ app.get("/now", (req, res, next) => {
 	sequence = JSON.parse(sequence);
 	var sequence_key = sequence['key'];
 	var sequence_sequence = sequence['sequence'];
+	console.log(msgs);
 	console.log('full_loop_ms = '+full_loop_ms);
 	console.log('now = '+now);
 	var this_key = parseInt(now/full_loop_ms);
 	console.log('this_key = '+this_key);
 	console.log('sequence_key = '+sequence_key);
+	sequence_key = this_key;
 	if( sequence_key < this_key){
-
 		console.log('sequence_key < this_key, time to update');
-		sequence_key = this_key;
 		console.log('before shuffle '+sequence_sequence);
 		console.log('first item in sequence '+sequence_sequence[0]);
 		shuffle(sequence_sequence);
 		console.log('after shuffle '+sequence_sequence);
-		var sequence_update = {
-			'key':sequence_key,
-			'sequence':sequence_sequence
-		}
-		
-		sequence_update = JSON.stringify(sequence_update);
-		fs.writeFile(sequence_path, sequence_update, function(err, result) {
-			if(err) console.log('error', err);
-		});
-		
 	}
-	else if(sequence_key == this_key){
-		console.log('sequence_key == this_key');
+	var sequence_update = {
+		'key':sequence_key,
+		'sequence':sequence_sequence
 	}
+	
+	sequence_update = JSON.stringify(sequence_update);
+	fs.writeFile(sequence_path, sequence_update, function(err, result) {
+		if(err) console.log('error', err);
+	});
+
 	paste_msgs(sequence_sequence);
 	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
