@@ -26,7 +26,6 @@ fs.readdir(dataFolder, (err, filenames) => {
 });
 // --------------  msgs.js -----------------
 // date / time
-console.log('hi');
 Date.prototype.today = function () { 
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -193,7 +192,6 @@ function handle_msgs(name, response, results_count = false){
 	var this_msgs = '';
 	// opening msg for each section;
 	if(name == 'new-york-times'){
-		// console.log('updaing new-york-times');
 		this_msgs = ' from the NYTimes : ' + msgs_break ;
 		response = response['results'] ;
 		for(i = 0 ; i < results_count ; i++){
@@ -201,9 +199,7 @@ function handle_msgs(name, response, results_count = false){
 			if(typeof this_msg != 'undefined')
 				this_msgs += (this_msg+msgs_break);
 		}
-
 	}else if(name == 'covidtracking'){
-		// console.log('updaing covidtracking');
 		this_msgs = ' from covidtracking.com : ' + msgs_break;
 		for(i = 0 ; i < response.length ; i++){
 			if(response[i]['state'] == 'NY'){
@@ -224,13 +220,11 @@ function handle_msgs(name, response, results_count = false){
         	this_msg += response[i]['descriptor']+' is reported around '+response[i]['landmark']+' ';
         	this_msgs += msgs_break+this_msg+msgs_break;
         }
-
 	}
 	else if(name == 'train'){
 		this_msgs = ' There is a train arriving now at : ' + response['result'][0]['name'] + msgs_break;
 	}
 	else if(name == 'population'){
-		// console.log(response[0]);
 		this_msgs = ' Total population in NYC: ' + response[0]['_2020']+". " + msgs_break;
 		for(i = 1 ; i <response.length ; i++ ){
 			this_msgs += ' Population in ' + response[i]['borough'].replace('   ', '') + ": " + response[i]['_2020']+"("+response[i]['_2020_boro_share_of_nyc_total']+"%)"+msgs_break;
@@ -266,7 +260,6 @@ function handle_msgs(name, response, results_count = false){
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
 		this_msgs += ' Street Tree in NYC : ';
-		
 		while(data_count < results_count){
 			this_msgs += response[index]['spc_common'] + ' on '+ response[index]['address']+'. Diameter at Breast Height: '+response[index]['tree_dbh']+' in. '+msgs_break;
 			data_count++;
@@ -320,9 +313,7 @@ function handle_msgs(name, response, results_count = false){
 			index = parseInt( response.length * Math.random() );			
 		}
 	}
-
 	msgs_sections['mid'][name] = this_msgs;
-
 }
 
 function shuffle(array) {
@@ -365,13 +356,16 @@ Date.prototype.addDays = function(days) {
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
+    console.log('hasCache: '+hasCache);
     var this_mtime = cache_mtime[name+'.'+data_type];
+    console.log('this_mtime: '+this_mtime);
     var now_timestamp = new Date().getTime();
     now_timestamp = parseInt(now_timestamp/1000); // ms to s
     if(cache_lifecycle){
     	cache_lifecycle = cache_lifecycle * 60;
     }
-
+    console.log('cache_lifecycle: '+cache_lifecycle);
+    console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
@@ -400,7 +394,6 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       		}else if(data_type == 'xml'){
       			var response = httpRequest.responseText;
       		}
-      		console.log('live response'+response);
       		if(response){
       			now_timestamp = new Date().getTime();
     			now_timestamp = parseInt(now_timestamp/1000); // ms to s
@@ -473,7 +466,6 @@ app.listen(3000, () => {
 app.get("/now", (req, res, next) => {
 	
 	var now = new Date().getTime();
-	console.log(now+' requested');
 	var now_ny = get_time();
 	var char_num = 48;
 	var delay_ms = 3000;
