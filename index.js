@@ -521,13 +521,8 @@ app.get("/now", (req, res, next) => {
 	sequence = JSON.parse(sequence);
 	var sequence_key = sequence['key'];
 	var sequence_sequence = sequence['sequence'];
-	console.log(msgs);
-	console.log('full_loop_ms = '+full_loop_ms);
-	console.log('now = '+now);
 	var this_key = parseInt(now/full_loop_ms);
-	console.log('this_key = '+this_key);
-	console.log('sequence_key = '+sequence_key);
-	sequence_key = this_key;
+	
 	if( sequence_key < this_key){
 		console.log('sequence_key < this_key, time to update');
 		console.log('before shuffle '+sequence_sequence);
@@ -535,6 +530,7 @@ app.get("/now", (req, res, next) => {
 		shuffle(sequence_sequence);
 		console.log('after shuffle '+sequence_sequence);
 	}
+	sequence_key = this_key;
 	var sequence_update = {
 		'key':sequence_key,
 		'sequence':sequence_sequence
