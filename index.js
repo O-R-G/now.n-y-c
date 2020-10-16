@@ -55,7 +55,7 @@ var req_array = [
 	,{	
 		'name': 'covidtracking',
 		'req_url': 'http://covidtracking.com/api/v1/states/current.json', 
-		'data_type': 'xml',
+		'data_type': 'json',
         'results_count': '',
         'use_header': false, 
         'cache_lifecycle': 10
@@ -374,10 +374,10 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	httpRequest.onreadystatechange = function(){
 		
 		if (httpRequest.readyState === 4) {
-			if(name == 'covidtracking'){
-				console.log('httpRequest.status = '+httpRequest.status);
-				console.log(httpRequest.responseText);
-			}
+			// if(name == 'covidtracking'){
+			// 	console.log('httpRequest.status = '+httpRequest.status);
+			// 	console.log(httpRequest.responseText);
+			// }
 	      if (httpRequest.status === 200) {	
 	      	if(counter > counter_max && hasCache && cache_lifecycle){
 	      		// request_cache(name, data_type, results_count);
