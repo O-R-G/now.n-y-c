@@ -54,7 +54,7 @@ var req_array = [
 	}
 	,{	
 		'name': 'covidtracking',
-		'req_url': 'https://covidtracking.com/api/v1/states/current.json', 
+		'req_url': 'http://covidtracking.com/api/v1/states/current.json', 
 		'data_type': 'xml',
         'results_count': '',
         'use_header': false, 
