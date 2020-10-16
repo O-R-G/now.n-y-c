@@ -14,8 +14,10 @@ app.use(cors());
 var dataFolder = __dirname + '/static/data/';
 var cache_mtime = {};
 var cache_filenames = [];
-
+console.log('dataFolder = '+dataFolder);
 fs.readdir(dataFolder, (err, filenames) => {
+	console.log('filenames = ');
+	console.log(filenames);
 	if(typeof filenames != 'undefined'){
 		filenames.forEach(name => {
 	    	var this_mtime = fs.statSync(dataFolder + name).mtime;
@@ -466,7 +468,7 @@ app.listen(3000, () => {
 });
 
 app.get("/now", (req, res, next) => {
-	
+	console.log('in get()');
 	var now = new Date().getTime();
 	var now_ny = get_time();
 	var char_num = 48;
