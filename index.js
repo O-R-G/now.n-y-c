@@ -376,7 +376,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 		if (httpRequest.readyState === 4) {
 			if(name == 'covidtracking'){
 				console.log('httpRequest.status = '+httpRequest.status);
-				console.log(response);
+				console.log(httpRequest.responseText);
 			}
 	      if (httpRequest.status === 200) {	
 	      	if(counter > counter_max && hasCache && cache_lifecycle){
