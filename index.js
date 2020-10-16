@@ -57,7 +57,7 @@ var req_array = [
 		'req_url': 'https://covidtracking.com/api/v1/states/current.json', 
 		'data_type': 'json',
         'results_count': '',
-        'use_header': true, 
+        'use_header': false, 
         'cache_lifecycle': 10
 	}
 	,{	
@@ -457,10 +457,7 @@ app.get("/now", (req, res, next) => {
 	console.log('in get()');
 
 	var dataFolder = __dirname + '/static/data/';
-	console.log('dataFolder = '+dataFolder);
 	fs.readdir(dataFolder, (err, filenames) => {
-		console.log('filenames = ');
-		console.log(filenames);
 		if(typeof filenames != 'undefined'){
 			filenames.forEach(name => {
 		    	var this_mtime = fs.statSync(dataFolder + name).mtime;
