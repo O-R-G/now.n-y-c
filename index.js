@@ -365,10 +365,10 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     if(cache_lifecycle){
     	cache_lifecycle = cache_lifecycle * 60;
     }
-    console.log('this_mtime: '+this_mtime);
-    console.log('now_timestamp: '+now_timestamp);
+    // console.log('this_mtime: '+this_mtime);
+    // console.log('now_timestamp: '+now_timestamp);
     console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
-    if( (cache_lifecycle && now_timestamp - this_mtime > cache_lifecycle) || !cache_lifecycle || !hasCache){
+    if( (cache_lifecycle && (now_timestamp - this_mtime > cache_lifecycle)) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
     }else{
