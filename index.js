@@ -153,12 +153,12 @@ msgs_sections['opening'][0].push('                     ');
 msgs_sections['opening'][0].push('                     '); 
 msgs_sections['opening'][0] = msgs_sections['opening'][0].join('');
 msgs_sections['opening'][1] = [];
-msgs_sections['opening'][1].push(now_msg[0]); 
+msgs_sections['opening'][1].push(now_msg[0] + ' '); 
 msgs_sections['opening'][1].push(now_msg[1]); 
 msgs_sections['opening'][1].push('–––––––––––––––––––––'); 
 msgs_sections['opening'][1].push('—————————————————————'); 
 msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
-
+console.log(msgs_sections['opening'][1]);
 msgs_sections['mid'] = {};
 
 msgs_sections['ending'] = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.';
@@ -189,7 +189,6 @@ function handle_msgs(name, response, results_count = false){
 				this_msgs += (this_msg+msgs_break);
 		}
 	}else if(name == 'covidtracking'){
-		console.log(response);
 		this_msgs = ' from covidtracking.com : ' + msgs_break;
 		for(i = 0 ; i < response.length ; i++){
 			if(response[i]['state'] == 'NY'){
@@ -327,11 +326,12 @@ function paste_msgs(sequence_sequence){
 // update_msgs_opening(): fired every time the msgs loop is done;
 function update_msgs_opening(now_ny){
 	msgs_sections['opening'][1] = [];
-	msgs_sections['opening'][1].push(now_ny[0]); 
+	msgs_sections['opening'][1].push(now_ny[0]+' '); 
 	msgs_sections['opening'][1].push(now_ny[1]); 
     msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
     msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
 	msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
+	console.log(msgs_sections['opening'][1]);
 	msgs_temp[0] = msgs_sections['opening'][0].concat(msgs_sections['opening'][1]);
 }
 // -------------  end msgs.js ---------------------
@@ -344,7 +344,7 @@ Date.prototype.addDays = function(days) {
 }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
-    console.log('=====  '+name+'  =====');
+    // console.log('=====  '+name+'  =====');
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
     var this_mtime = cache_mtime[name+'.'+data_type];
@@ -354,9 +354,8 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     if(cache_lifecycle){
     	cache_lifecycle = cache_lifecycle * 60;
     }
-    // console.log('this_mtime: '+this_mtime);
-    // console.log('now_timestamp: '+now_timestamp);
-    console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+    
+    // console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && (now_timestamp - this_mtime > cache_lifecycle)) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
@@ -375,9 +374,6 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	httpRequest.onreadystatechange = function(){
 		
 		if (httpRequest.readyState === 4) {
-			if(name == 'covidtracking')
-				console.log('covidtracking req_url = '+request_url);
-			
 	      if (httpRequest.status === 200) {	
 	      	if(counter > counter_max && hasCache && cache_lifecycle){
 	      		// request_cache(name, data_type, results_count);
@@ -458,8 +454,6 @@ app.listen(3000, () => {
 });
 
 app.get("/now", (req, res, next) => {
-	console.log('in get()');
-
 	var dataFolder = __dirname + '/static/data/';
 	fs.readdir(dataFolder, (err, filenames) => {
 		if(typeof filenames != 'undefined'){
