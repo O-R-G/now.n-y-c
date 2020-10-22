@@ -158,7 +158,6 @@ msgs_sections['opening'][1].push(now_msg[1]);
 msgs_sections['opening'][1].push('–––––––––––––––––––––'); 
 msgs_sections['opening'][1].push('—————————————————————'); 
 msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
-console.log(msgs_sections['opening'][1]);
 msgs_sections['mid'] = {};
 
 msgs_sections['ending'] = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.';
@@ -331,7 +330,6 @@ function update_msgs_opening(now_ny){
     msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
     msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
 	msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
-	console.log(msgs_sections['opening'][1]);
 	msgs_temp[0] = msgs_sections['opening'][0].concat(msgs_sections['opening'][1]);
 }
 // -------------  end msgs.js ---------------------
@@ -344,7 +342,7 @@ Date.prototype.addDays = function(days) {
 }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
-    // console.log('=====  '+name+'  =====');
+    console.log('=====  '+name+'  =====');
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
     var this_mtime = cache_mtime[name+'.'+data_type];
@@ -355,7 +353,7 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     	cache_lifecycle = cache_lifecycle * 60;
     }
     
-    // console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+    console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && (now_timestamp - this_mtime > cache_lifecycle)) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
