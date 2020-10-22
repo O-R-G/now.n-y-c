@@ -3,7 +3,7 @@ var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var moment = require('moment-timezone');
+// var moment = require('moment-timezone');
 
 
 var app = express();
@@ -54,7 +54,7 @@ var req_array = [
 	}
 	,{	
 		'name': 'covidtracking',
-		'req_url': 'https://covidtracking.com/api/v1/states/current.json', 
+		'req_url': 'https://api.covidtracking.com/v1/us/current.json', 
 		'data_type': 'json',
         'results_count': '',
         'use_header': true, 
