@@ -189,6 +189,7 @@ function handle_msgs(name, response, results_count = false){
 				this_msgs += (this_msg+msgs_break);
 		}
 	}else if(name == 'covidtracking'){
+		console.log(response);
 		this_msgs = ' from covidtracking.com : ' + msgs_break;
 		for(i = 0 ; i < response.length ; i++){
 			if(response[i]['state'] == 'NY'){
