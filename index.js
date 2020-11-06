@@ -136,7 +136,6 @@ var req_array = [
 		'cache_lifecycle': 1440
 	}
 	,{
-		// https://data.cityofnewyork.us/Business/License-Applications/ptev-4hud
 		'name':'weather',
 		'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
 		'data_type': 'json',
@@ -314,9 +313,8 @@ function handle_msgs(name, response, results_count = false){
 	{
 		this_msgs += " Current weather in NYC: ";
 		var weather_data_now = response['properties']['periods'][0]['detailedForecast'];
-		console.log(weather_data_now); 
-		// this_msgs += weather_data_now;
-		// this_msgs += msgs_break;
+		this_msgs += weather_data_now;
+		this_msgs += msgs_break;
 	}
 	msgs_sections['mid'][name] = this_msgs;
 }
