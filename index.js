@@ -357,7 +357,7 @@ Date.prototype.addDays = function(days) {
 }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
-    console.log('=====  '+name+'  =====');
+    // console.log('=====  '+name+'  =====');
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
     var this_mtime = cache_mtime[name+'.'+data_type];
@@ -368,7 +368,7 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     	cache_lifecycle = cache_lifecycle * 60;
     }
     
-    console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+    // console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && (now_timestamp - this_mtime > cache_lifecycle)) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
 
@@ -512,11 +512,10 @@ app.get("/now", (req, res, next) => {
 	var this_key = parseInt(now/full_loop_ms);
 
 	var new_data = [];
+	console.log('sequence_sequence');
 	req_array.forEach(req => {
-		var this_filename = req['name']+'.'+req['data_type'];
-		if(!sequence_sequence.includes(this_filename)){
+		if(!sequence_sequence.includes(req['name']))
 			sequence_sequence.push(req['name']);
-		}
 	});
 	
 	if( sequence_key < this_key)
