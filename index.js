@@ -471,10 +471,10 @@ app.get("/now", (req, res, next) => {
 	fs.readdir(dataFolder, (err, filenames) => {
 		if(typeof filenames != 'undefined'){
 			req_array.forEach(req => {
-				var name = req['name'];
-		    	var this_mtime = fs.statSync(dataFolder + name).mtime;
+				var name = req['name']+'.json';
+		    	var this_statSync = fs.statSync(dataFolder + name);
 		    	if(this_mtime)
-		    		cache_mtime[name] = this_mtime;
+		    		cache_mtime[name] = this_statSync.mtime;
 		    	else
 		    		cache_mtime[name] = 0
 				cache_filenames.push(name);
