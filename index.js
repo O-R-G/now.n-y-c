@@ -314,8 +314,9 @@ function handle_msgs(name, response, results_count = false){
 	{
 		this_msgs = " Current weather in NYC: ";
 		var weather_data_now = response['properties']['periods'][0]['detailedForecast']; 
-		this_msgs += weather_data_now;
-		this_msgs += msgs_break;
+		console.log(weather_data_now);
+		// this_msgs += weather_data_now;
+		// this_msgs += msgs_break;
 	}
 	msgs_sections['mid'][name] = this_msgs;
 }
