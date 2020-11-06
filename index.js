@@ -472,12 +472,15 @@ app.get("/now", (req, res, next) => {
 		if(typeof filenames != 'undefined'){
 			req_array.forEach(req => {
 				var name = req['name']+'.json';
-		    	var this_statSync = fs.statSync(dataFolder + name);
-		    	if(this_mtime)
-		    		cache_mtime[name] = this_statSync.mtime;
-		    	else
-		    		cache_mtime[name] = 0
-				cache_filenames.push(name);
+				console.log(dataFolder + name);
+				try {
+				  var this_statSync = fs.statSync(dataFolder + name);
+				  cache_mtime[name] = this_statSync.mtime;
+				}
+				catch(err) {
+				    cache_mtime[name] = 0;
+				}
+		    	cache_filenames.push(name);
 			});
 			call_request_json();
 		}
