@@ -1,2 +1,3 @@
 node_modules
 static/data/*.json
+static/sequence.json
