@@ -470,9 +470,14 @@ app.get("/now", (req, res, next) => {
 	var dataFolder = __dirname + '/static/data/';
 	fs.readdir(dataFolder, (err, filenames) => {
 		if(typeof filenames != 'undefined'){
-			filenames.forEach(name => {
+			req_array.forEach(req => {
+				var name = req['name'];
 		    	var this_mtime = fs.statSync(dataFolder + name).mtime;
-				cache_mtime[name] = this_mtime;
+		    	if(this_mtime)
+		    		cache_mtime[name] = this_mtime;
+					
+		    	else
+		    		cache_mtime[name] = 0
 				cache_filenames.push(name);
 			});
 			call_request_json();
