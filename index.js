@@ -468,10 +468,15 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var dataFolder = __dirname + '/static/data/';
+	
 	fs.readdir(dataFolder, (err, filenames) => {
 		if(typeof filenames != 'undefined'){
 			req_array.forEach(req => {
 				var name = req['name']+'.json';
+				if(!filenames.includes(name)){
+					console.log('new data: '+req['name']);
+					new_data.push(req['name']);
+				}
 				try {
 				  var this_statSync = fs.statSync(dataFolder + name);
 				  cache_mtime[name] = this_statSync.mtime;
@@ -505,10 +510,19 @@ app.get("/now", (req, res, next) => {
 	var sequence_key = sequence['key'];
 	var sequence_sequence = sequence['sequence'];
 	var this_key = parseInt(now/full_loop_ms);
+
+	var new_data = [];
+	req_array.forEach(req => {
+		var this_filename = req['name']+'.'+req['data_type'];
+		if(!sequence_sequence.includes(this_filename)){
+			sequence_sequence.push(req['name']);
+		}
+	});
 	
 	if( sequence_key < this_key)
 		shuffle(sequence_sequence);
 	
+
 	sequence_key = this_key;
 	var sequence_update = {
 		'key':sequence_key,
