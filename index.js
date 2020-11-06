@@ -475,7 +475,6 @@ app.get("/now", (req, res, next) => {
 		    	var this_mtime = fs.statSync(dataFolder + name).mtime;
 		    	if(this_mtime)
 		    		cache_mtime[name] = this_mtime;
-					
 		    	else
 		    		cache_mtime[name] = 0
 				cache_filenames.push(name);
