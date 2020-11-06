@@ -135,14 +135,14 @@ var req_array = [
 		'use_header': false,
 		'cache_lifecycle': 1440
 	}
-	,{
-		'name':'weather',
-		'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': true,
-		'cache_lifecycle': 60
-	}
+	// ,{
+	// 	'name':'weather',
+	// 	'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': true,
+	// 	'cache_lifecycle': 60
+	// }
 	
 ];
 
