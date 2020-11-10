@@ -512,36 +512,7 @@ app.get("/now", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'];
-
-	// var sequence_path = __dirname+'/static/sequence.json';
-	// var sequence = fs.readFileSync(sequence_path);
-	// sequence = JSON.parse(sequence);
-	// var sequence_key = sequence['key'];
-	// var sequence_sequence = sequence['sequence'];
-	// var this_key = parseInt(now/full_loop_ms);
-
-	// var new_data = [];
-
-	// req_array.forEach(req => {
-	// 	if(!sequence_sequence.includes(req['name']))
-	// 		sequence_sequence.push(req['name']);
-	// });
 	
-	// if( sequence_key < this_key)
-	// 	shuffle(sequence_sequence);
-	
-
-	// sequence_key = this_key;
-	// var sequence_update = {
-	// 	'key':sequence_key,
-	// 	'sequence':sequence_sequence
-	// }
-	
-	// sequence_update = JSON.stringify(sequence_update);
-	// fs.writeFile(sequence_path, sequence_update, function(err, result) {
-	// 	if(err) console.log('error', err);
-	// });
-
 	paste_msgs(req_array);
 	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
