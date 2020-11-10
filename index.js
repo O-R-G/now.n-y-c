@@ -227,18 +227,21 @@ function handle_msgs(name, response, results_count = false){
 		}
 	}
 	else if(name == 'hotspot'){
-		var index = parseInt( response.length * Math.random() );
+		// var index = parseInt( response.length * Math.random() );
+		var index = 0;
 		var data_count = 0;
 		while(data_count < 1){			
 			if(response[index]['type'] == 'Free'){
 				this_msgs += ' Free public hotspot "'+response[index]['ssid']+'" at '+response[index]['location'];
 				data_count++;
 			}
-			index = parseInt( response.length * Math.random() );
+			// index = parseInt( response.length * Math.random() );
+			index++;
 		}
 	}
 	else if(name == 'restaurant-inspection'){
-		var index = parseInt( response.length * Math.random() );
+		// var index = parseInt( response.length * Math.random() );
+		var index = 0;
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
 		this_msgs += ' From DOHMH New York City Restaurant Inspection Results : ';
@@ -248,11 +251,13 @@ function handle_msgs(name, response, results_count = false){
 				this_msgs += response[index]['dba'] + ' on '+ response[index]['street']+' is graded as A. '+msgs_break;
 				data_count++;
 			}
-			index = parseInt( response.length * Math.random() );			
+			// index = parseInt( response.length * Math.random() );
+			index++;			
 		}
 	}
 	else if(name == 'street-tree'){
-		var index = parseInt( response.length * Math.random() );
+		// var index = parseInt( response.length * Math.random() );
+		var index = 0;
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
 		this_msgs += ' Street Tree in NYC : ';
@@ -283,7 +288,8 @@ function handle_msgs(name, response, results_count = false){
 		this_msgs += aqi + ' ('+ level+') '+msgs_break;
 	}
 	else if(name == 'energy-efficiency-projects'){
-		var index = parseInt( response.length * Math.random() );
+		// var index = parseInt( response.length * Math.random() );
+		var index = 0;
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
 		this_msgs += " The City's Energy Efficiency Projects: ";
@@ -292,11 +298,13 @@ function handle_msgs(name, response, results_count = false){
 				this_msgs += response[index]['primaryprojecttype'] + ' for '+ response[index]['projectsitename']+'. Status: '+response[index]['projectstatus']+' '+msgs_break;
 				data_count++;
 			}
-			index = parseInt( response.length * Math.random() );			
+			// index = parseInt( response.length * Math.random() );
+			index++;			
 		}
 	}
 	else if(name == 'DCA-license'){
-		var index = parseInt( response.length * Math.random() );
+		// var index = parseInt( response.length * Math.random() );
+		var index = 0;
 		var data_count = 0;
 		results_count = results_count ? results_count : 1;
 		this_msgs += " From DCA : Legally Operating Businesses License issued to";
@@ -306,7 +314,8 @@ function handle_msgs(name, response, results_count = false){
 				this_msgs += response[index]['business_name']+' '+msgs_break;
 				data_count++;
 			}
-			index = parseInt( response.length * Math.random() );			
+			// index = parseInt( response.length * Math.random() );	
+			index++;		
 		}
 	}
 	else if(name == 'weather')
@@ -323,10 +332,10 @@ function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-function paste_msgs(sequence_sequence){
+function paste_msgs(req_array){
 	msgs_temp = msgs_sections['opening'];
-	for(i = 0; i < sequence_sequence.length; i++){
-		var this_key = sequence_sequence[i];
+	for(i = 0; i < req_array.length; i++){
+		var this_key = req_array[i]['name'];
 		msgs_temp += msgs_sections['mid'][this_key];
 	}
 	msgs_temp += msgs_sections['ending'];
@@ -504,36 +513,36 @@ app.get("/now", (req, res, next) => {
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'];
 
-	var sequence_path = __dirname+'/static/sequence.json';
-	var sequence = fs.readFileSync(sequence_path);
-	sequence = JSON.parse(sequence);
-	var sequence_key = sequence['key'];
-	var sequence_sequence = sequence['sequence'];
-	var this_key = parseInt(now/full_loop_ms);
+	// var sequence_path = __dirname+'/static/sequence.json';
+	// var sequence = fs.readFileSync(sequence_path);
+	// sequence = JSON.parse(sequence);
+	// var sequence_key = sequence['key'];
+	// var sequence_sequence = sequence['sequence'];
+	// var this_key = parseInt(now/full_loop_ms);
 
-	var new_data = [];
-	console.log('sequence_sequence');
-	req_array.forEach(req => {
-		if(!sequence_sequence.includes(req['name']))
-			sequence_sequence.push(req['name']);
-	});
+	// var new_data = [];
+
+	// req_array.forEach(req => {
+	// 	if(!sequence_sequence.includes(req['name']))
+	// 		sequence_sequence.push(req['name']);
+	// });
 	
-	if( sequence_key < this_key)
-		shuffle(sequence_sequence);
+	// if( sequence_key < this_key)
+	// 	shuffle(sequence_sequence);
 	
 
-	sequence_key = this_key;
-	var sequence_update = {
-		'key':sequence_key,
-		'sequence':sequence_sequence
-	}
+	// sequence_key = this_key;
+	// var sequence_update = {
+	// 	'key':sequence_key,
+	// 	'sequence':sequence_sequence
+	// }
 	
-	sequence_update = JSON.stringify(sequence_update);
-	fs.writeFile(sequence_path, sequence_update, function(err, result) {
-		if(err) console.log('error', err);
-	});
+	// sequence_update = JSON.stringify(sequence_update);
+	// fs.writeFile(sequence_path, sequence_update, function(err, result) {
+	// 	if(err) console.log('error', err);
+	// });
 
-	paste_msgs(sequence_sequence);
+	paste_msgs(req_array);
 	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
 });
