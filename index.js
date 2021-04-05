@@ -60,14 +60,14 @@ var req_array = [
         'use_header': true, 
         'cache_lifecycle': 10
 	}
-	,{	
-		'name': '311',
-		'req_url': 'https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$limit=2', 
-		'data_type': 'json',
-        'results_count': '',
-        'use_header': true,
-        'cache_lifecycle': 10
-	}
+	// ,{	
+	// 	'name': '311',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$limit=2', 
+	// 	'data_type': 'json',
+ //        'results_count': '',
+ //        'use_header': true,
+ //        'cache_lifecycle': 10
+	// }
 	,{	
 		'name': 'train',
 		'req_url': "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min,
