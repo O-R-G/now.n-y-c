@@ -499,10 +499,10 @@ app.get("/now", (req, res, next) => {
 		if(typeof filenames != 'undefined'){
 			req_array.forEach(req => {
 				var name = req['name']+'.json';
-				if(!filenames.includes(name)){
-					console.log('new data: '+req['name']);
-					new_data.push(req['name']);
-				}
+				// if(!filenames.includes(name)){
+				// 	console.log('new data: '+req['name']);
+				// 	new_data.push(req['name']);
+				// }
 				try {
 				  var this_statSync = fs.statSync(dataFolder + name);
 				  cache_mtime[name] = this_statSync.mtime;
