@@ -92,14 +92,14 @@ var req_array = [
 		'use_header': false,
 		'cache_lifecycle': 1440
 	}
-	,{
-		'name':'restaurant-inspection',
-		'req_url': 'https://data.cityofnewyork.us/resource/43nn-pn8j.json',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
+	// ,{
+	// 	'name':'restaurant-inspection',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/43nn-pn8j.json',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1440
+	// }
 	,{
 		'name':'street-tree',
 		'req_url': 'https://data.cityofnewyork.us/resource/uvpi-gqnh.json',
@@ -239,22 +239,22 @@ function handle_msgs(name, response, results_count = false){
 			index++;
 		}
 	}
-	else if(name == 'restaurant-inspection'){
-		// var index = parseInt( response.length * Math.random() );
-		var index = 0;
-		var data_count = 0;
-		results_count = results_count ? results_count : 1;
-		this_msgs += ' From DOHMH New York City Restaurant Inspection Results : ';
+	// else if(name == 'restaurant-inspection'){
+	// 	// var index = parseInt( response.length * Math.random() );
+	// 	var index = 0;
+	// 	var data_count = 0;
+	// 	results_count = results_count ? results_count : 1;
+	// 	this_msgs += ' From DOHMH New York City Restaurant Inspection Results : ';
 		
-		while(data_count < results_count){
-			if(response[index]['critical_flag'] == 'N' && response[index]['grade'] == 'A'){
-				this_msgs += response[index]['dba'] + ' on '+ response[index]['street']+' is graded as A. '+msgs_break;
-				data_count++;
-			}
-			// index = parseInt( response.length * Math.random() );
-			index++;			
-		}
-	}
+	// 	while(data_count < results_count){
+	// 		if(response[index]['critical_flag'] == 'N' && response[index]['grade'] == 'A'){
+	// 			this_msgs += response[index]['dba'] + ' on '+ response[index]['street']+' is graded as A. '+msgs_break;
+	// 			data_count++;
+	// 		}
+	// 		// index = parseInt( response.length * Math.random() );
+	// 		index++;			
+	// 	}
+	// }
 	else if(name == 'street-tree'){
 		// var index = parseInt( response.length * Math.random() );
 		var index = 0;
@@ -402,7 +402,15 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 	      	}
 
       		if(data_type == 'json'){
-      			var response = JSON.parse(httpRequest.responseText);
+      			try{
+      				var response = JSON.parse(httpRequest.responseText);
+      			}
+      			catch(err)
+      			{
+      				console.log('Error!');
+      				console.log('Data from '+request_url+' cant be parsed into JSON.');
+      				return false;
+      			}
       		}else if(data_type == 'xml'){
       			var response = httpRequest.responseText;
       		}
@@ -445,7 +453,16 @@ function update_cache(cache_filename = '', response, data_type, now_timestamp){
 function request_cache(cache_filename = '', data_type, results_count = false){
 	var req_url = __dirname + '/static/data/'+cache_filename+'.'+data_type;
 	var this_cache = fs.readFileSync(req_url);
-	this_cache = JSON.parse(this_cache);
+	try{
+		this_cache = JSON.parse(this_cache);
+	}
+	catch(err)
+	{
+		console.log('Error!');
+		console.log('Cache ('+cache_filename+') cant be parsed into JSON.');
+		return false;
+	}
+
 	var this_last_updated = fs.statSync(req_url).mtime;
 	this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
 	if(this_last_updated != cache_mtime[cache_filename+'.'+data_type])
@@ -512,7 +529,6 @@ app.get("/now", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'];
-	
 	paste_msgs(req_array);
 	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
