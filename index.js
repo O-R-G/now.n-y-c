@@ -155,10 +155,10 @@ var msgs_array = [];
 
 msgs_sections['opening'] = [];
 msgs_sections['opening'][0] = [];
-msgs_sections['opening'][0].push('NEW YORK CONSOLIDATED'); 
-msgs_sections['opening'][0].push('                     '); 
-msgs_sections['opening'][0].push('                     '); 
-msgs_sections['opening'][0].push('                     '); 
+msgs_sections['opening'][0].push('NEW YORK CONSOLIDATED   '); 
+msgs_sections['opening'][0].push('                        '); 
+// msgs_sections['opening'][0].push('                     '); 
+// msgs_sections['opening'][0].push('                     '); 
 msgs_sections['opening'][0] = msgs_sections['opening'][0].join('');
 msgs_sections['opening'][1] = [];
 msgs_sections['opening'][1].push(now_msg[0] + ' '); 
@@ -333,7 +333,8 @@ function shuffle(array) {
 }
 
 function paste_msgs(req_array){
-	msgs_temp = msgs_sections['opening'];
+	msgs_temp = msgs_sections['opening'][0] + msgs_sections['opening'][1];
+	console.log(msgs_temp);
 	for(i = 0; i < req_array.length; i++){
 		var this_key = req_array[i]['name'];
 		msgs_temp += msgs_sections['mid'][this_key];
@@ -342,6 +343,7 @@ function paste_msgs(req_array){
 	msgs_temp = msgs_temp.toUpperCase();
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
+
 }
 
 // this is different from update_msgs() (at least for now)
