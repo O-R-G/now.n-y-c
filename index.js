@@ -160,12 +160,22 @@ msgs_sections['opening'][0].push('                        ');
 // msgs_sections['opening'][0].push('                     '); 
 // msgs_sections['opening'][0].push('                     '); 
 msgs_sections['opening'][0] = msgs_sections['opening'][0].join('');
-msgs_sections['opening'][1] = [];
-msgs_sections['opening'][1].push(now_msg[0] + ' '); 
-msgs_sections['opening'][1].push(now_msg[1]); 
-msgs_sections['opening'][1].push('–––––––––––––––––––––'); 
-msgs_sections['opening'][1].push('—————————————————————'); 
-msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
+var now_temp_1 = now_msg[0];
+var length_temp = now_temp_1.length;
+while(length_temp % 24 != 0)
+{
+	now_temp_1 += ' ';
+}
+var now_temp_2 = now_msg[1];
+length_temp = now_temp_2.length;
+while(length_temp % 24 != 0)
+{
+	now_temp_2 += ' ';
+}
+msgs_sections['opening'][1] = now_temp_1 + now_temp_2;
+msgs_sections['opening'][1] += '––––––––––––––––––––––––';
+msgs_sections['opening'][1] += '————————————————————————';
+
 msgs_sections['mid'] = {};
 
 msgs_sections['ending'] = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.';
@@ -350,12 +360,28 @@ function paste_msgs(req_array){
 // update_msgs(): fired every whatever seconds setInverval sets;
 // update_msgs_opening(): fired every time the msgs loop is done;
 function update_msgs_opening(now_ny){
-	msgs_sections['opening'][1] = [];
-	msgs_sections['opening'][1].push(now_ny[0]+' '); 
-	msgs_sections['opening'][1].push(now_ny[1]); 
-    msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
-    msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
-	msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
+	// msgs_sections['opening'][1] = [];
+	// msgs_sections['opening'][1].push(now_ny[0]+' '); 
+	// msgs_sections['opening'][1].push(now_ny[1]); 
+ //    msgs_sections['opening'][1].push('–––––––––––––––––––––'); // en-dash (S)
+ //    msgs_sections['opening'][1].push('—————————————————————'); // em-dash (L)
+	// msgs_sections['opening'][1] = msgs_sections['opening'][1].join('');
+	var now_temp_1 = now_ny[0];
+	var length_temp = now_temp_1.length;
+	while(length_temp % 24 != 0)
+	{
+		now_temp_1 += ' ';
+	}
+	var now_temp_2 = now_ny[1];
+	length_temp = now_temp_2.length;
+	while(length_temp % 24 != 0)
+	{
+		now_temp_2 += ' ';
+	}
+	msgs_sections['opening'][1] = now_temp_1 + now_temp_2;
+	msgs_sections['opening'][1] += '––––––––––––––––––––––––';
+	msgs_sections['opening'][1] += '————————————————————————';
+
 	msgs_temp[0] = msgs_sections['opening'][0].concat(msgs_sections['opening'][1]);
 }
 // -------------  end msgs.js ---------------------
