@@ -165,12 +165,15 @@ var length_temp = now_temp_1.length;
 while(length_temp % 24 != 0)
 {
 	now_temp_1 += ' ';
+	length_temp = now_temp_1.length;
 }
 var now_temp_2 = now_msg[1];
 length_temp = now_temp_2.length;
 while(length_temp % 24 != 0)
 {
 	now_temp_2 += ' ';
+	length_temp = now_temp_2.length;
+
 }
 msgs_sections['opening'][1] = now_temp_1 + now_temp_2;
 msgs_sections['opening'][1] += '––––––––––––––––––––––––';
@@ -371,12 +374,14 @@ function update_msgs_opening(now_ny){
 	while(length_temp % 24 != 0)
 	{
 		now_temp_1 += ' ';
+		length_temp = now_temp_1.length;
 	}
 	var now_temp_2 = now_ny[1];
 	length_temp = now_temp_2.length;
 	while(length_temp % 24 != 0)
 	{
 		now_temp_2 += ' ';
+		length_temp = now_temp_2.length;
 	}
 	msgs_sections['opening'][1] = now_temp_1 + now_temp_2;
 	msgs_sections['opening'][1] += '––––––––––––––––––––––––';
