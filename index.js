@@ -347,7 +347,6 @@ function shuffle(array) {
 
 function paste_msgs(req_array){
 	msgs_temp = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-	console.log(msgs_temp);
 	for(i = 0; i < req_array.length; i++){
 		var this_key = req_array[i]['name'];
 		msgs_temp += msgs_sections['mid'][this_key];
@@ -388,8 +387,6 @@ function update_msgs_opening(now_ny){
 	msgs_sections['opening'][1] += '————————————————————————';
 
 	msgs_temp[0] = msgs_sections['opening'][0].concat(msgs_sections['opening'][1]);
-	console.log('msgs_temp[0] = ');
-	console.log(msgs_temp[0]);
 }
 // -------------  end msgs.js ---------------------
 
@@ -558,13 +555,18 @@ app.get("/now", (req, res, next) => {
 	var char_num = 48;
 	var delay_ms = 3000;
 	var screen_interval = 5600; // 50 ms * 52 + 3000 ms
+	update_msgs_opening(now_ny);
+	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
+	paste_msgs(req_array);
+	var temp_length = msgs.length;
+	while(temp_length % 48 != 0){
+		msgs += ' ';
+		temp_length = msgs.length;
+	}
 	var msgs_length = msgs.length;
 	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
-	update_msgs_opening(now_ny);
-	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-	paste_msgs(req_array);
 	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
 });
