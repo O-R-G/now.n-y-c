@@ -388,6 +388,8 @@ function update_msgs_opening(now_ny){
 	msgs_sections['opening'][1] += '————————————————————————';
 
 	msgs_temp[0] = msgs_sections['opening'][0].concat(msgs_sections['opening'][1]);
+	console.log('msgs_temp[0] = ');
+	console.log(msgs_temp[0]);
 }
 // -------------  end msgs.js ---------------------
 
@@ -561,7 +563,7 @@ app.get("/now", (req, res, next) => {
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
 	update_msgs_opening(now_ny);
-	var msgs_opening = msgs_sections['opening'];
+	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	paste_msgs(req_array);
 	// now = now/1000; // seconds since 1970 unix time
 	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening });
