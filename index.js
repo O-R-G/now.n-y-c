@@ -62,7 +62,7 @@ var req_array = [
 	}
 	,{	
 		'name': '311',
-		'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD' &$limit=2", 
+		'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD'&$limit=2", 
 		'data_type': 'json',
         'results_count': '',
         'use_header': true,
@@ -226,7 +226,11 @@ function handle_msgs(name, response, results_count = false){
 	}else if(name == '311'){
 		for(i = 0 ; i < response.length ; i++){
         	var this_msg = ' from '+response[i]['agency']+': ';
-        	this_msg += response[i]['descriptor']+' is reported around '+response[i]['landmark']+' ';
+        	this_msg += response[i]['descriptor']+' is reported ';
+        	if(response[i]['landmark'] != undefined)
+        		'around '+response[i]['landmark']+' ';
+        	else
+        		'in '+response[i]['city']+' ';
         	this_msgs += msgs_break+this_msg+msgs_break;
         }
 	}
@@ -399,8 +403,6 @@ Date.prototype.addDays = function(days) {
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     // console.log('=====  '+name+'  =====');
-    if(name == 311)
-    	console.log('request_json 311');
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
     var this_mtime = cache_mtime[name+'.'+data_type];
@@ -414,12 +416,8 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     // console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && (now_timestamp - this_mtime > cache_lifecycle)) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
-    	if(name == 311)
-    		console.log('request_live 311');
     }else{
     	request_cache(name, data_type, results_count);
-    	if(name == 311)
-    		console.log('request_cache 311');
     }
 
 }
