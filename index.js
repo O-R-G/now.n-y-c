@@ -60,14 +60,14 @@ var req_array = [
         'use_header': true, 
         'cache_lifecycle': 10
 	}
-	// ,{	
-	// 	'name': '311',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$limit=2', 
-	// 	'data_type': 'json',
- //        'results_count': '',
- //        'use_header': true,
- //        'cache_lifecycle': 10
-	// }
+	,{	
+		'name': '311',
+		'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD' &$limit=2", 
+		'data_type': 'json',
+        'results_count': '',
+        'use_header': true,
+        'cache_lifecycle': 10
+	}
 	,{	
 		'name': 'train',
 		'req_url': "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min,
@@ -399,6 +399,8 @@ Date.prototype.addDays = function(days) {
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false) {
     // console.log('=====  '+name+'  =====');
+    if(name == 311)
+    	console.log('request_json 311');
     var json = '';
     var hasCache = ( cache_filenames.indexOf(name+'.'+data_type) != -1 ) ? true : false;
     var this_mtime = cache_mtime[name+'.'+data_type];
@@ -412,9 +414,12 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     // console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     if( (cache_lifecycle && (now_timestamp - this_mtime > cache_lifecycle)) || !cache_lifecycle || !hasCache){
     	request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp);
-
+    	if(name == 311)
+    		console.log('request_live 311');
     }else{
     	request_cache(name, data_type, results_count);
+    	if(name == 311)
+    		console.log('request_cache 311');
     }
 
 }
@@ -559,15 +564,15 @@ app.get("/now", (req, res, next) => {
 	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	paste_msgs(req_array);
 	var temp_length = msgs.length;
-	while(temp_length % 48 != 0){
+	while(temp_length % char_num != 0){
 		msgs += ' ';
 		temp_length = msgs.length;
 	}
 	var msgs_length = msgs.length;
-	var full_loop_ms = (parseInt(msgs_length / char_num) + 1) * screen_interval ;
+	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
-	var sliced_msg = msgs.substr(position, 48);
-	// now = now/1000; // seconds since 1970 unix time
-	res.json({ now: now, msgs: msgs, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
+	var sliced_msg = msgs.substr(position, char_num);
+
+	res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
 });
