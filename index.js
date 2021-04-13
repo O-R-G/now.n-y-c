@@ -141,7 +141,7 @@ var req_array = [
 		'data_type': 'json',
 		'results_count': '',
 		'use_header': false,
-		'cache_lifecycle': 60
+		'cache_lifecycle': 1
 	}
 	
 ];
@@ -337,8 +337,9 @@ function handle_msgs(name, response, results_count = false){
 	}
 	else if(name == 'weather')
 	{
-		this_msgs += " Current weather in NYC: ";
+		this_msgs += " Today's weather in NYC: ";
 		var weather_data_now = response['properties']['periods'][0]['detailedForecast'];
+		console.log('weather data updated at: '+response['properties']['updated']);
 		this_msgs += weather_data_now;
 		this_msgs += msgs_break;
 	}
