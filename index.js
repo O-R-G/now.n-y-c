@@ -141,7 +141,7 @@ var req_array = [
 		'data_type': 'json',
 		'results_count': '',
 		'use_header': false,
-		'cache_lifecycle': 60
+		'cache_lifecycle': 1
 	}
 	
 ];
