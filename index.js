@@ -573,5 +573,23 @@ app.get("/now", (req, res, next) => {
 	position = parseInt ( position / screen_interval ) * char_num;
 	var sliced_msg = msgs.substr(position, char_num);
 
+
+/*
+    translate
+
+    https://github.com/iamtraction/google-translate
+    https://sites.google.com/site/opti365/translate_codes
+*/
+
+const translate = require('@iamtraction/google-translate');
+
+translate(msgs, { to: 'zh-CN' }).then(res => {
+    console.log(res.text); // OUTPUT: You are amazing!
+}).catch(err => {
+    console.error(err);
+});
+
+
+
 	res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
 });
