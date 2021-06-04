@@ -568,7 +568,8 @@ app.get("/now", (req, res, next) => {
     // https://github.com/iamtraction/google-translate
     // https://sites.google.com/site/opti365/translate_codes
     const translate = require('@iamtraction/google-translate');
-    translate(msgs, { to: 'es' }).then(translated => {
+    // translate(msgs, { to: 'es' }).then(translated => {
+    translate(msgs, { to: 'zh-CN' }).then(translated => {
         msgs = translated.text;
 
         // calc msgs length, pad, sync
