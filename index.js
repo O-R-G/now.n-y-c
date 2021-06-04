@@ -530,7 +530,8 @@ app.listen(3000, () => {
 
 app.get("/now", (req, res, next) => {
 	var dataFolder = __dirname + '/static/data/';
-	
+
+    // load cached	
 	fs.readdir(dataFolder, (err, filenames) => {
 		if(typeof filenames != 'undefined'){
 			req_array.forEach(req => {
@@ -562,34 +563,30 @@ app.get("/now", (req, res, next) => {
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	paste_msgs(req_array);
-	var temp_length = msgs.length;
-	while(temp_length % char_num != 0){
-		msgs += ' ';
-		temp_length = msgs.length;
-	}
-	var msgs_length = msgs.length;
-	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
-	var position = now % full_loop_ms;
-	position = parseInt ( position / screen_interval ) * char_num;
-	var sliced_msg = msgs.substr(position, char_num);
 
+    // translate
+    // https://github.com/iamtraction/google-translate
+    // https://sites.google.com/site/opti365/translate_codes
+    const translate = require('@iamtraction/google-translate');
+    translate(msgs, { to: 'es' }).then(translated => {
+        msgs = translated.text;
 
-/*
-    translate
-
-    https://github.com/iamtraction/google-translate
-    https://sites.google.com/site/opti365/translate_codes
-*/
-
-const translate = require('@iamtraction/google-translate');
-
-translate(msgs, { to: 'zh-CN' }).then(res => {
-    console.log(res.text); // OUTPUT: You are amazing!
-}).catch(err => {
-    console.error(err);
-});
-
-
-
-	res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
+        // calc msgs length, pad, sync
+	    var temp_length = msgs.length;
+	    while(temp_length % char_num != 0){
+		    msgs += ' ';
+		    temp_length = msgs.length;
+	    }
+	    var msgs_length = msgs.length;
+	    var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
+	    var position = now % full_loop_ms;
+	    position = parseInt ( position / screen_interval ) * char_num;
+	    var sliced_msg = msgs.substr(position, char_num);
+    
+        // send response
+	    res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
+    }).catch(err => {
+        console.error(err);
+        res.send(err);
+    });
 });
