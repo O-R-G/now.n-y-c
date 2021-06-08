@@ -9,8 +9,10 @@
   "author": "david reinfurt",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/translate": "^6.2.2",
     "@iamtraction/google-translate": "^1.1.2",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "xmlhttprequest": "^1.4.0"

@@ -1,10 +1,10 @@
 process.env.TZ = 'America/New_York';
+require('dotenv').config();
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 // var moment = require('moment-timezone');
-
 
 var app = express();
 app.use(cors());
@@ -524,6 +524,21 @@ function call_request_json(){
 }
 // -------------  end call_request_json.js  ----
 
+
+
+// translate
+
+const {Translate} = require('@google-cloud/translate').v2;
+const translate = new Translate();
+
+async function translate_msgs(text, target) {
+    let [translations] = await translate.translate(text, target);
+    translations = Array.isArray(translations) ? translations : [translations];
+    translations.forEach((translation, i) => {
+        msgs = translation;
+    });
+}
+
 app.listen(3000, () => {
 	console.log("Server running on port 3000");
 });
@@ -563,15 +578,7 @@ app.get("/now", (req, res, next) => {
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	paste_msgs(req_array);
-
-    // translate
-    // https://github.com/iamtraction/google-translate
-    // https://sites.google.com/site/opti365/translate_codes
-    const translate = require('@iamtraction/google-translate');
-    // translate(msgs, { to: 'es' }).then(translated => {
-    translate(msgs, { to: 'zh-CN' }).then(translated => {
-        msgs = translated.text;
-
+    translate_msgs(msgs, 'ja').then(translated => {
         // calc msgs length, pad, sync
 	    var temp_length = msgs.length;
 	    while(temp_length % char_num != 0){
