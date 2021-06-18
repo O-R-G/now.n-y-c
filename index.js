@@ -625,11 +625,11 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
 		{
 			console.log('request_english_cache(): file exists');
 			var this_cache_en = fs.readFileSync(req_url_en);
-			translate_msgs(this_cache_en, lang, name).then(translated => {
+			translate_msgs(this_cache_en, lang, cache_filename).then(translated => {
 				var handled = handle_msgs(cache_filename, handled_response[lang][cache_filename], results_count, lang, true);
 			    now_timestamp = new Date().getTime();
 				now_timestamp = parseInt(now_timestamp/1000); // ms to s
-				update_cache(name, handled_response[lang][name], 'txt', now_timestamp, lang); // update lang cache
+				update_cache(cache_filename, handled_response[lang][cache_filename], 'txt', now_timestamp, lang); // update lang cache
 		    }).catch(err => {
 		        console.error(err);
 		        res.send(err);
@@ -660,12 +660,8 @@ function call_request_json(lang='en'){
 // translate
 
 const {Translate} = require('@google-cloud/translate').v2;
+const translate = new Translate();
 // const translate = new Translate();
-const translate = new Translate(
-	{
-		projectId: 'n-y-c-translate',
-		keyFilename: 'n-y-c-translate-16af2257bbb4.json'
-	});
 
 async function translate_msgs(text, target, name) {
 	console.log('Translating '+name+' into '+target+'...');
