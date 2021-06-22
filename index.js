@@ -623,7 +623,6 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
 		}
 		else
 		{
-			console.log('request_english_cache(): file exists');
 			var this_cache_en = fs.readFileSync(req_url_en);
 			translate_msgs(this_cache_en, lang, cache_filename).then(translated => {
 				var handled = handle_msgs(cache_filename, handled_response[lang][cache_filename], results_count, lang, true);
