@@ -46,7 +46,6 @@ supported_lang.forEach(function(el){
 	cache_filenames[el] = [];
 	cache_mtime[el] = {};
 	handled_response[el] = {};
-	msgs[el] = 'initial'; // the final msgs for display. array of letters
 });
 
 
@@ -185,7 +184,8 @@ var req_array = [
 
 
 var now_msg = get_time();
-var msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
+var msgs = 'initial', // the final msgs for display. array of letters
+	msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
 	msgs_temp = []; // the intermediate msgs to hold updated msgs, and wait until the current frame is settled. 
 var msgs_array = [];
 
@@ -413,7 +413,7 @@ function paste_msgs(req_array, lang = 'en'){
 	msgs_temp += msgs_sections['ending'];
 	msgs_temp = msgs_temp.toUpperCase();
 	msgs_temp = msgs_temp.split('');
-	msgs[lang] = msgs_temp.join('');
+	msgs = msgs_temp.join('');
 
 }
 
@@ -469,27 +469,36 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     if(cache_lifecycle){
     	cache_lifecycle = cache_lifecycle * 60;
     }
-    
-    // console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
-    if( (cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle)) || !cache_lifecycle || !hasEnCache){
-    	// 1. the english json is expired
-    	// 2. cache_lifecycle is set to false
-    	// 3. there's no english json
-    	if( cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle) ){
-    		console.log("the english cache of "+name+" is expired. request_live...");
-    	}
-    	else if(!cache_lifecycle)
-    		console.log("cache_lifecycle of "+name+" is set to false. request_live...");
-    	else if(!hasEnCache)
-    		console.log("there's no english cache of "+name+". request_live...");
-		request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
-    }else{
-    	if( this_mtime < this_en_mtime - 100 )
-    		request_english_cache(name, 'txt', lang);
-    	else{
-    		request_cache(name, 'txt', results_count, lang);
-    	}
+
+    // force using chinese json. Workaround for translate-temp
+    if(lang == 'zh')
+    {
+    	request_cache(name, 'txt', results_count, lang);
     }
+    else
+    {
+    	// console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+	    if( (cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle)) || !cache_lifecycle || !hasEnCache){
+	    	// 1. the english json is expired
+	    	// 2. cache_lifecycle is set to false
+	    	// 3. there's no english json
+	    	if( cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle) ){
+	    		console.log("the english cache of "+name+" is expired. request_live...");
+	    	}
+	    	else if(!cache_lifecycle)
+	    		console.log("cache_lifecycle of "+name+" is set to false. request_live...");
+	    	else if(!hasEnCache)
+	    		console.log("there's no english cache of "+name+". request_live...");
+			request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
+	    }else{
+	    	if( this_mtime < this_en_mtime - 100 )
+	    		request_english_cache(name, 'txt', lang);
+	    	else{
+	    		request_cache(name, 'txt', results_count, lang);
+	    	}
+	    }
+    }
+    
 
 }
 
@@ -754,16 +763,16 @@ app.get("/now", (req, res, next) => {
 	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	paste_msgs(req_array, lang);
 
-	var temp_length = msgs[lang].length;
+	var temp_length = msgs.length;
 	while(temp_length % char_num != 0){
-		msgs[lang] += ' ';
-		temp_length = msgs[lang].length;
+		msgs += ' ';
+		temp_length = msgs.length;
 	}
-	var msgs_length = msgs[lang].length;
+	var msgs_length = msgs.length;
 	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
-	var sliced_msg = msgs[lang].substr(position, char_num);
+	var sliced_msg = msgs.substr(position, char_num);
 
 	res.json(
 		{ 
