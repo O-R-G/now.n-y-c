@@ -40,13 +40,13 @@ var cache_mtime = {};
 	}
 */
 var cache_filenames = {};
-
 var handled_response = {};
-
+var msgs = {};
 supported_lang.forEach(function(el){
 	cache_filenames[el] = [];
 	cache_mtime[el] = {};
 	handled_response[el] = {};
+	msgs[el] = 'initial'; // the final msgs for display. array of letters
 });
 
 
@@ -185,8 +185,7 @@ var req_array = [
 
 
 var now_msg = get_time();
-var msgs = 'initial', // the final msgs for display. array of letters
-	msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
+var msgs_sections = {}, // the kept msgs in the form of opening, mid, ending. it needs to stay array so that it has the flexibility to be updated.
 	msgs_temp = []; // the intermediate msgs to hold updated msgs, and wait until the current frame is settled. 
 var msgs_array = [];
 
@@ -384,7 +383,6 @@ function handle_msgs(name, response, results_count = false, lang, formatted=fals
 			{
 				this_msgs += " Today's weather in NYC: ";
 				var weather_data_now = response['properties']['periods'][0]['detailedForecast'];
-				console.log('weather data updated at: '+response['properties']['updated']);
 				this_msgs += weather_data_now;
 				this_msgs += msgs_break;
 			}
@@ -406,7 +404,7 @@ function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-function paste_msgs(req_array){
+function paste_msgs(req_array, lang = 'en'){
 	msgs_temp = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	for(i = 0; i < req_array.length; i++){
 		var this_key = req_array[i]['name'];
@@ -415,7 +413,7 @@ function paste_msgs(req_array){
 	msgs_temp += msgs_sections['ending'];
 	msgs_temp = msgs_temp.toUpperCase();
 	msgs_temp = msgs_temp.split('');
-	msgs = msgs_temp.join('');
+	msgs[lang] = msgs_temp.join('');
 
 }
 
@@ -487,7 +485,7 @@ function request_json(name, request_url, data_type, results_count = false, use_h
 		request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
     }else{
     	if( this_mtime < this_en_mtime - 100 )
-    		request_english_cache(name, 'txt', results_count, lang);
+    		request_english_cache(name, 'txt', lang);
     	else{
     		request_cache(name, 'txt', results_count, lang);
     	}
@@ -530,7 +528,10 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       				request_cache(name, 'txt', results_count, lang);
       				return false;
       			}
-
+      			if(lang == undefined || lang == '')
+      			{
+      				console.log('lang is undefined in request_live()');
+      			}
       			if(lang == 'en')
       			{
       				handled_response[lang][name] = handled_response_en;
@@ -549,7 +550,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
     					update_cache(name, handled_response_en, 'txt', now_timestamp, 'en'); // update en cache
 				    }).catch(err => {
 				        console.error(err);
-				        res.send(err);
+				        // res.send(err);
 				        return false;
 				    });
 
@@ -623,6 +624,10 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
 		}
 		else
 		{
+			if(lang == undefined || lang == '')
+  			{
+  				console.log('lang is undefined in request_english_cache()');
+  			}
 			var this_cache_en = fs.readFileSync(req_url_en);
 			translate_msgs(this_cache_en, lang, cache_filename).then(translated => {
 				var handled = handle_msgs(cache_filename, handled_response[lang][cache_filename], results_count, lang, true);
@@ -631,7 +636,7 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
 				update_cache(cache_filename, handled_response[lang][cache_filename], 'txt', now_timestamp, lang); // update lang cache
 		    }).catch(err => {
 		        console.error(err);
-		        res.send(err);
+		        // translated.send(err);
 		        return false;
 		    });
 		}
@@ -747,56 +752,33 @@ app.get("/now", (req, res, next) => {
 	var screen_interval = 5600; // 50 ms * 52 + 3000 ms
 	update_msgs_opening(now_ny);
 	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-	paste_msgs(req_array);
-	// if(lang == 'en')
-	// {
-	// 	var temp_length = msgs.length;
-	// 	while(temp_length % char_num != 0){
-	// 		msgs += ' ';
-	// 		temp_length = msgs.length;
-	// 	}
-	// 	var msgs_length = msgs.length;
-	// 	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
-	// 	var position = now % full_loop_ms;
-	// 	position = parseInt ( position / screen_interval ) * char_num;
-	// 	var sliced_msg = msgs.substr(position, char_num);
+	paste_msgs(req_array, lang);
 
-	// 	res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
-	// }
-	// else
-	// {
-	// 	translate_msgs(msgs, lang).then(translated => {
-	//         // calc msgs length, pad, sync
-	// 	    var temp_length = msgs.length;
-	// 	    while(temp_length % char_num != 0){
-	// 		    msgs += ' ';
-	// 		    temp_length = msgs.length;
-	// 	    }
-	// 	    var msgs_length = msgs.length;
-	// 	    var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
-	// 	    var position = now % full_loop_ms;
-	// 	    position = parseInt ( position / screen_interval ) * char_num;
-	// 	    var sliced_msg = msgs.substr(position, char_num);
-	    
-	//         // send response
-	// 	    res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
-	//     }).catch(err => {
-	//         console.error(err);
-	//         res.send(err);
-	//     });
-	// }
-	var temp_length = msgs.length;
+	var temp_length = msgs[lang].length;
 	while(temp_length % char_num != 0){
-		msgs += ' ';
-		temp_length = msgs.length;
+		msgs[lang] += ' ';
+		temp_length = msgs[lang].length;
 	}
-	var msgs_length = msgs.length;
+	var msgs_length = msgs[lang].length;
 	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
-	var sliced_msg = msgs.substr(position, char_num);
+	var sliced_msg = msgs[lang].substr(position, char_num);
 
-	res.json({ now: now, msgs: msgs, msgs_length: msgs_length, position: position, delay_ms: delay_ms, screen_interval: screen_interval, full_loop_ms: full_loop_ms, msgs_beginning: msgs_beginning, msgs_opening: msgs_opening, sliced_msg: sliced_msg });
+	res.json(
+		{ 
+			now: now, 
+			msgs: msgs, 
+			msgs_length: msgs_length, 
+			position: position, 
+			delay_ms: delay_ms, 
+			screen_interval: screen_interval, 
+			full_loop_ms: full_loop_ms, 
+			msgs_beginning: msgs_beginning, 
+			msgs_opening: msgs_opening, 
+			sliced_msg: sliced_msg
+		}
+	);
 
     
 });
