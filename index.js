@@ -10,7 +10,7 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var app = express();
 app.use(cors());
 
-var supported_lang = ['en', 'zh'];
+var supported_lang = ['en', 'zh', 'es', 'ko', 'ar'];
 
 /* 
 	cache_time is the last modified time of english jsons. 
@@ -47,7 +47,7 @@ supported_lang.forEach(function(el){
 	cache_mtime[el] = {};
 	handled_response[el] = {};
 });
-
+// console.log(cache_mtime);
 
 // --------------  msgs.js -----------------
 // date / time
@@ -230,10 +230,12 @@ var ready_now = 0;
 var ready_full = req_array.length;
 
 function handle_msgs(name, response, results_count = false, lang, formatted=false){
+	console.log('handle_msgs');
 	if(results_count == '')
 		results_count = false;
 	var response = response;
 	var this_msgs = '';
+	
 	// opening msg for each section;
 	if(!formatted)
 	{
@@ -405,6 +407,7 @@ function shuffle(array) {
 }
 
 function paste_msgs(req_array, lang = 'en'){
+	// console.log('paste_msgs: '+lang);
 	msgs_temp = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	for(i = 0; i < req_array.length; i++){
 		var this_key = req_array[i]['name'];
@@ -454,8 +457,8 @@ Date.prototype.addDays = function(days) {
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false, lang) {
     // console.log('=====  '+name+'  =====');
     var json = '';
-    var hasCache = ( cache_filenames[lang].includes(name+'.txt') != -1 ); // whether it has cache of the specified language
-    var hasEnCache = ( cache_filenames['en'].includes(name+'.txt') != -1 ); // whether it has cache of english
+    var hasCache = cache_filenames[lang].includes(name+'.txt') !== false; // whether it has cache of the specified language
+    var hasEnCache = cache_filenames['en'].includes(name+'.txt') !== false; // whether it has cache of english
     var this_en_mtime = cache_mtime['en'][name+'.txt']; // m time of the enslish json
     var this_mtime = cache_mtime[lang][name+'.txt'];
     // this_en_mtime = parseInt(this_en_mtime/1000);
@@ -470,8 +473,13 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     	cache_lifecycle = cache_lifecycle * 60;
     }
 
+    // using cache but no cached file -> newly added 
+    if(cache_lifecycle && !hasCache)
+    	isNew = true;
+    else
+    	isNew = false;
     // force using chinese json. Workaround for translate-temp
-    if(lang == 'zh')
+    if(lang != 'en')
     {
     	request_cache(name, 'txt', results_count, lang);
     }
@@ -491,9 +499,12 @@ function request_json(name, request_url, data_type, results_count = false, use_h
 	    		console.log("there's no english cache of "+name+". request_live...");
 			request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
 	    }else{
-	    	if( this_mtime < this_en_mtime - 100 )
+	    	if( isNew || this_mtime < this_en_mtime - 100 ){
+	    		// console.log('request_english_cache');
 	    		request_english_cache(name, 'txt', lang);
+	    	}
 	    	else{
+
 	    		request_cache(name, 'txt', results_count, lang);
 	    	}
 	    }
@@ -552,13 +563,15 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       			}
       			else
       			{
+      				// console.log('handled_response_en = ');
+      				// console.log(handled_response_en);
       				translate_msgs(handled_response_en, lang, name).then(translated => {
 					    now_timestamp = new Date().getTime();
     					now_timestamp = parseInt(now_timestamp/1000); // ms to s
     					update_cache(name, handled_response[lang][name], 'txt', now_timestamp, lang); // update lang cache
     					update_cache(name, handled_response_en, 'txt', now_timestamp, 'en'); // update en cache
 				    }).catch(err => {
-				        console.error(err);
+				        // console.error(err);
 				        // res.send(err);
 				        return false;
 				    });
@@ -585,6 +598,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 }
 
 function update_cache(cache_filename = '', handled_response, cache_data_type='txt', now_timestamp, lang){
+	console.log('updating cache...');
 	var cache_path = __dirname + '/static/data/'+lang+'/'+cache_filename+'.'+cache_data_type;
 	fs.writeFile(cache_path, handled_response, function(err, result) {
 		if(err) console.log('error', err);
@@ -595,30 +609,33 @@ function update_cache(cache_filename = '', handled_response, cache_data_type='tx
 	
 function request_cache(cache_filename = '', cache_data_type="txt", results_count = false, lang){
 	var req_url = __dirname + '/static/data/'+lang+'/'+cache_filename+'.'+cache_data_type;
-	console.log('request_cache(): '+req_url);
+	// console.log('request_cache(): '+req_url);
 	fs.access(req_url, fs.F_OK, (err) =>{
 		if(err){
 			console.log('request_cache(): cant find cached file '+cache_filename+ ' of '+lang);
-			request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
+			// request_live(cache_filename, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
 			return false;
 		}
 		else
 		{
-			console.log('request_cache(): file exists');
-			var this_cache = fs.readFileSync(req_url);
-			var this_last_updated = fs.statSync(req_url).mtime;
-			this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
-			if(this_last_updated != cache_mtime[cache_filename+'.'+cache_data_type])
-			    cache_mtime[cache_filename+'.'+cache_data_type] = this_last_updated;
-			var handled = handle_msgs(cache_filename, this_cache, results_count, lang, true);
-			if(handled == false){
-				console.log('request_cache(): fail to handle_msgs()');
-				return false;
-			}	
-			else{
-				ready_now++;
-				return true;
-			}
+			// console.log('request_cache(): file exists');
+			var this_cache = fs.readFile(req_url, 'utf8', function(err, data){
+				var this_last_updated = fs.statSync(req_url).mtime;
+				this_last_updated = parseInt(new Date(this_last_updated).getTime()/1000);
+				if(this_last_updated != cache_mtime[cache_filename+'.'+cache_data_type])
+				    cache_mtime[cache_filename+'.'+cache_data_type] = this_last_updated;
+
+				var handled = handle_msgs(cache_filename, data, results_count, lang, true);
+				if(handled == false){
+					console.log('request_cache(): fail to handle_msgs()');
+					return false;
+				}	
+				else{
+					ready_now++;
+					return true;
+				}
+			});
+			
 		}
 	});
 }
@@ -633,21 +650,40 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
 		}
 		else
 		{
+
 			if(lang == undefined || lang == '')
   			{
   				console.log('lang is undefined in request_english_cache()');
   			}
-			var this_cache_en = fs.readFileSync(req_url_en);
-			translate_msgs(this_cache_en, lang, cache_filename).then(translated => {
-				var handled = handle_msgs(cache_filename, handled_response[lang][cache_filename], results_count, lang, true);
-			    now_timestamp = new Date().getTime();
-				now_timestamp = parseInt(now_timestamp/1000); // ms to s
-				update_cache(cache_filename, handled_response[lang][cache_filename], 'txt', now_timestamp, lang); // update lang cache
-		    }).catch(err => {
-		        console.error(err);
-		        // translated.send(err);
+  			try
+  			{
+  				console.log('has en cache');
+  				fs.readFile(req_url_en, 'utf8', function(err, data){
+					translate_msgs(data, lang, cache_filename).then(translated => {
+						console.log(data);
+						// console.log(handled_response[lang][cache_filename]);
+						// console.log(cache_filename);
+						// console.log(handled_response[lang][cache_filename]);
+						now_timestamp = new Date().getTime();
+						now_timestamp = parseInt(now_timestamp/1000); // ms to s
+
+						update_cache(cache_filename, handled_response[lang][cache_filename], 'txt', now_timestamp, lang); // update lang cache
+						var handled = handle_msgs(cache_filename, handled_response[lang][cache_filename], results_count, lang, true);
+						console.log(handles);
+					    
+				    }).catch(err => {
+				        // console.error(err);
+				        // translated.send(err);
+				        return false;
+				    });
+				});
+  			}
+  			catch(err){
+  				console.log('Fail to fs.readFileSync( '+ req_url_en +' )');
+				console.error(err);
 		        return false;
-		    });
+			}
+			
 		}
 	});
 }
@@ -677,10 +713,11 @@ const translate = new Translate();
 // const translate = new Translate();
 
 async function translate_msgs(text, target, name) {
-	console.log('Translating '+name+' into '+target+'...');
     let [translations] = await translate.translate(text, target);
     translations = Array.isArray(translations) ? translations : [translations];
     translations.forEach((translation, i) => {
+    	// console.log('translated '+name+' = ');
+    	// console.log(translation);
     	handled_response[target][name] = translation;
     });
 }
@@ -698,7 +735,7 @@ app.get("/now", (req, res, next) => {
   	{
   		lang = queryObject['lang'];
   	}
-  	console.log('lang = '+lang);
+  	// console.log('lang = '+lang);
   	var dataFolder_en = dataFolder + 'en' + '/';
   	dataFolder = dataFolder + lang + '/';
 
@@ -722,8 +759,44 @@ app.get("/now", (req, res, next) => {
 			filenames.forEach(name=>{
 				cache_filenames[lang].push(name);
 			});
-			if(lang == 'en')
-				call_request_json(lang);
+			if(lang == 'en'){
+				// console.log('lang = en')
+				// call_request_json(lang);
+
+				var now = new Date().getTime();
+				var now_ny = get_time();
+				var char_num = 48;
+				var delay_ms = 3000;
+				var screen_interval = 5600; // 50 ms * 52 + 3000 ms
+				update_msgs_opening(now_ny);
+				var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
+				paste_msgs(req_array, lang);
+
+				var temp_length = msgs.length;
+				while(temp_length % char_num != 0){
+					msgs += ' ';
+					temp_length = msgs.length;
+				}
+				var msgs_length = msgs.length;
+				var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
+				var position = now % full_loop_ms;
+				position = parseInt ( position / screen_interval ) * char_num;
+				var sliced_msg = msgs.substr(position, char_num);
+				res.json(
+					{ 
+						now: now, 
+						msgs: msgs, 
+						msgs_length: msgs_length, 
+						position: position, 
+						delay_ms: delay_ms, 
+						screen_interval: screen_interval, 
+						full_loop_ms: full_loop_ms, 
+						msgs_beginning: msgs_beginning, 
+						msgs_opening: msgs_opening, 
+						sliced_msg: sliced_msg
+					}
+				);
+			}
 			else
 			{
 				fs.readdir(dataFolder_en, (err, filenames) => {
@@ -746,48 +819,52 @@ app.get("/now", (req, res, next) => {
 							cache_filenames['en'].push(name);
 						});
 						call_request_json(lang);
-						console.log("cache_mtime['en'] = ");
-						console.log(cache_mtime['en']);
+						// console.log("cache_mtime['en'] = ");
+						// console.log(cache_mtime['en']);
+						var now = new Date().getTime();
+						var now_ny = get_time();
+						var char_num = 48;
+						var delay_ms = 3000;
+						var screen_interval = 5600; // 50 ms * 52 + 3000 ms
+						update_msgs_opening(now_ny);
+						var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
+						paste_msgs(req_array, lang);
+
+						var temp_length = msgs.length;
+						while(temp_length % char_num != 0){
+							msgs += ' ';
+							temp_length = msgs.length;
+						}
+						var msgs_length = msgs.length;
+						var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
+						var position = now % full_loop_ms;
+						position = parseInt ( position / screen_interval ) * char_num;
+						var sliced_msg = msgs.substr(position, char_num);
+						console.log('sending response...');
+						setTimeout(function(){
+							res.json(
+								{ 
+									now: now, 
+									msgs: msgs, 
+									msgs_length: msgs_length, 
+									position: position, 
+									delay_ms: delay_ms, 
+									screen_interval: screen_interval, 
+									full_loop_ms: full_loop_ms, 
+									msgs_beginning: msgs_beginning, 
+									msgs_opening: msgs_opening, 
+									sliced_msg: sliced_msg
+								}
+							);
+						}, 0);
+						
 					}
 				});
 			}
 		}
 	});
 
-	var now = new Date().getTime();
-	var now_ny = get_time();
-	var char_num = 48;
-	var delay_ms = 3000;
-	var screen_interval = 5600; // 50 ms * 52 + 3000 ms
-	update_msgs_opening(now_ny);
-	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-	paste_msgs(req_array, lang);
-
-	var temp_length = msgs.length;
-	while(temp_length % char_num != 0){
-		msgs += ' ';
-		temp_length = msgs.length;
-	}
-	var msgs_length = msgs.length;
-	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
-	var position = now % full_loop_ms;
-	position = parseInt ( position / screen_interval ) * char_num;
-	var sliced_msg = msgs.substr(position, char_num);
-
-	res.json(
-		{ 
-			now: now, 
-			msgs: msgs, 
-			msgs_length: msgs_length, 
-			position: position, 
-			delay_ms: delay_ms, 
-			screen_interval: screen_interval, 
-			full_loop_ms: full_loop_ms, 
-			msgs_beginning: msgs_beginning, 
-			msgs_opening: msgs_opening, 
-			sliced_msg: sliced_msg
-		}
-	);
+	
 
     
 });
