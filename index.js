@@ -411,12 +411,15 @@ function paste_msgs(req_array, lang = 'en'){
 	msgs_temp = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	for(i = 0; i < req_array.length; i++){
 		var this_key = req_array[i]['name'];
+		// console.log(this_key);
 		msgs_temp += msgs_sections['mid'][this_key];
+		// console.log(msgs_sections['mid'][this_key]);
 	}
 	msgs_temp += msgs_sections['ending'];
 	msgs_temp = msgs_temp.toUpperCase();
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
+	// console.log(msgs);
 
 }
 
@@ -768,6 +771,7 @@ app.get("/now", (req, res, next) => {
 				var char_num = 48;
 				var delay_ms = 3000;
 				var screen_interval = 5600; // 50 ms * 52 + 3000 ms
+				call_request_json(lang);
 				update_msgs_opening(now_ny);
 				var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 				paste_msgs(req_array, lang);
@@ -782,6 +786,7 @@ app.get("/now", (req, res, next) => {
 				var position = now % full_loop_ms;
 				position = parseInt ( position / screen_interval ) * char_num;
 				var sliced_msg = msgs.substr(position, char_num);
+				console.log('sending message');
 				res.json(
 					{ 
 						now: now, 
