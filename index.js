@@ -9,7 +9,6 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 var app = express();
 app.use(cors());
-console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 var supported_lang = ['en', 'zh', 'es', 'ko', 'ar'];
 
