@@ -1,5 +1,5 @@
 process.env.TZ = 'America/New_York';
-require('dotenv').config();
+require('dotenv').config({path: '/var/www/node/now/.env'});
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
@@ -51,7 +51,7 @@ supported_lang.forEach(function(el){
 var char_num = 48;
 var delay_ms = 3000;
 var screen_interval = 5600; // 50 ms * 52 + 3000 ms
-
+var response_timer = null;
 // --------------  msgs.js -----------------
 // date / time
 Date.prototype.today = function () { 
@@ -732,17 +732,31 @@ async function translate_msgs(text, target, name) {
     	// console.log('translated '+name+' = ');
     	// console.log(translation);
     	handled_response[target][name] = translation;
-    	onsole.log('translating '+name+ ' finished');
+    	console.log('translating '+name+ ' finished');
     });
 }
 
 function checkReady(name, lang, res, failed = false){
 	ready_now++;
+
 	console.log('1. ready now: ' + ready_now + ' / ' + ready_full);
 	console.log(failed);
 	if(ready_now >= ready_full)
 	{
+		if(response_timer != null)
+		{
+			clearTimeout(response_timer);
+			response_timer = null;
+		}
 		paste_msgs(res, req_array, lang);
+	}
+	else
+	{
+		clearTimeout(response_timer);
+		response_timer = null;
+		response_timer = setTimeout(function(){
+			paste_msgs(res, req_array, lang);
+		}, 3500);
 	}
 }
 // sending response...
