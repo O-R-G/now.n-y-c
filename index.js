@@ -189,8 +189,6 @@ msgs_sections['opening'] = [];
 msgs_sections['opening'][0] = [];
 msgs_sections['opening'][0].push('NEW YORK CONSOLIDATED   '); 
 msgs_sections['opening'][0].push('                        '); 
-// msgs_sections['opening'][0].push('                     '); 
-// msgs_sections['opening'][0].push('                     '); 
 msgs_sections['opening'][0] = msgs_sections['opening'][0].join('');
 var now_temp_1 = now_msg[0];
 var length_temp = now_temp_1.length;
@@ -215,13 +213,14 @@ msgs_sections['mid'] = {};
 msgs_sections['ending'] = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.';
 var msgs_break = '///';
 
-// 	only 47 chars cause one if left for the blinking block
+// 	only 47 chars cause one is left for the blinking block
 var msgs_beginning = 'NEW YORK CONSOLIDATED                           '; 
 
 // preventing from the animation starts before data loaded.
 // if ready_now == 0 when an api is loaded, 
 // it fires timer then reading_now++
 // ( json.js )
+
 var ready_now = 0;
 var ready_full = req_array.length;
 
@@ -418,7 +417,7 @@ function paste_msgs(res, req_array, lang = 'en'){
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
 	// console.log(msgs);
-	// response_postPasteMsgs(res);
+	response_postPasteMsgs(res);
 }
 
 // this is different from update_msgs() (at least for now)
@@ -455,7 +454,7 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
-function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false, lang) {
+function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false, lang, res) {
     console.log('=====  '+name+'  =====');
     var json = '';
     var hasCache = cache_filenames[lang].includes(name+'.txt') !== false; // whether it has cache of the specified language
@@ -479,9 +478,9 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     else
     	isNew = false;
     // force using chinese json. Workaround for translate-temp
-    if(lang == 'ccccc')
+    if(lang == 'en')
     {
-    	request_cache(name, 'txt', results_count, lang);
+    	request_cache(name, 'txt', results_count, lang, res);
     }
     else
     {
@@ -506,15 +505,15 @@ function request_json(name, request_url, data_type, results_count = false, use_h
 	    		console.log("cache_lifecycle of "+name+" is set to false. request_live...");
 	    	else if(!hasEnCache)
 	    		console.log("there's no english cache of "+name+". request_live...");
-			request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
+			request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang, res);
 	    }else{
 	    	if( isNew || this_mtime < this_en_mtime - 100 ){
 	    		console.log('request_english_cache');
-	    		request_english_cache(name, 'txt', lang);
+	    		request_english_cache(name, 'txt', lang, res);
 	    	}
 	    	else{
 	    		// console.log('request cache?');
-	    		request_cache(name, 'txt', results_count, lang);
+	    		request_cache(name, 'txt', results_count, lang, res);
 	    	}
 	    }
     }
@@ -522,7 +521,7 @@ function request_json(name, request_url, data_type, results_count = false, use_h
 
 }
 
-function request_live(name, request_url, data_type,results_count = false, use_header = true, hasCache, now_timestamp, cache_lifecycle = false, lang){
+function request_live(name, request_url, data_type,results_count = false, use_header = true, hasCache, now_timestamp, cache_lifecycle = false, lang, res){
 	console.log('request_live for '+name+'...');
 	var counter = 0;
 	var counter_max = 3;
@@ -556,7 +555,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       			var handled_response_en = handle_msgs(name, response_en, results_count, lang); // static/js/msg.js
       			if(!handled_response_en)
       			{
-      				request_cache(name, 'txt', results_count, lang);
+      				request_cache(name, 'txt', results_count, lang, res);
       				return false;
       			}
       			if(lang == undefined || lang == '')
@@ -569,19 +568,17 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       				// console.log(handled_response[lang][name]);
       				now_timestamp = new Date().getTime();
     				now_timestamp = parseInt(now_timestamp/1000); // ms to s
+    				checkReady(name, lang, res);
     				update_cache(name, handled_response[lang][name], 'txt', now_timestamp, lang); // update lang cache
     				// cache_mtime[lang][name+'.'+data_type] = now_timestamp; // update lang mtime
       			}
       			else
       			{
       				console.log('received en live data for '+lang+' '+name);
-      				// console.log('handled_response_en = ');
-      				// console.log(handled_response_en);
       				translate_msgs(handled_response_en, lang, name).then(translated => {
+      					checkReady(name, lang, res);
 					    now_timestamp = new Date().getTime();
     					now_timestamp = parseInt(now_timestamp/1000); // ms to s
-    					// console.log('msg of '+name+' translated');
-    					// paste_msgs();
     					update_cache(name, handled_response[lang][name], 'txt', now_timestamp, lang); // update lang cache
     					update_cache(name, handled_response_en, 'txt', now_timestamp, 'en'); // update en cache
 				    }).catch(err => {
@@ -591,13 +588,13 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 				    });
 
       			}
-      			ready_now++;
+      			// ready_now++;
       		}
 	      	counter++;
 	      } else {
 	      	if(hasCache){
 	      		console.log('status !== 200, use cached file for '+name);
-	      		request_cache(name, 'txt', results_count, lang);
+	      		request_cache(name, 'txt', results_count, lang, res);
 	      	}else{
 	      		console.log('please check the request url');
 	      	}
@@ -621,7 +618,7 @@ function update_cache(cache_filename = '', handled_response, cache_data_type='tx
 	cache_mtime[lang][cache_filename+'.'+cache_data_type] = now_timestamp;
 }
 	
-function request_cache(cache_filename = '', cache_data_type="txt", results_count = false, lang){
+function request_cache(cache_filename = '', cache_data_type="txt", results_count = false, lang, res){
 	var req_url = __dirname + '/static/data/'+lang+'/'+cache_filename+'.'+cache_data_type;
 	// console.log('request_cache(): '+req_url);
 	fs.access(req_url, fs.F_OK, (err) =>{
@@ -642,10 +639,12 @@ function request_cache(cache_filename = '', cache_data_type="txt", results_count
 				var handled = handle_msgs(cache_filename, data, results_count, lang, true);
 				if(handled == false){
 					console.log('request_cache(): fail to handle_msgs()');
+					checkReady(cache_filename, lang, res, 'request_cache');
 					return false;
 				}	
 				else{
-					ready_now++;
+					// ready_now++;
+					checkReady(cache_filename, lang, res);
 					return true;
 				}
 			});
@@ -653,7 +652,7 @@ function request_cache(cache_filename = '', cache_data_type="txt", results_count
 		}
 	});
 }
-function request_english_cache(cache_filename = '', cache_data_type="txt", lang){
+function request_english_cache(cache_filename = '', cache_data_type="txt", lang, res){
 	var req_url = __dirname + '/static/data/'+lang+'/'+cache_filename+'.'+cache_data_type;
 	var req_url_en = __dirname + '/static/data/en/'+cache_filename+'.'+cache_data_type;
 	fs.access(req_url_en, fs.F_OK, (err) =>{
@@ -705,7 +704,7 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
 
 // -------------  call_request_json.js     --------
 
-function call_request_json(lang='en'){
+function call_request_json(lang='en', res){
 	now = new Date();
 	now_hr = now.hour();
 	now_min = now.minute();
@@ -713,7 +712,7 @@ function call_request_json(lang='en'){
     for(var i = 0 ; i < req_array.length ; i++){
     	if(req_array[i]['name'] == 'train')
     		req_array[i]['req_url'] = "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min;
-    	request_json(req_array[i]['name'], req_array[i]['req_url'], req_array[i]['data_type'], req_array[i]['results_count'], req_array[i]['use_header'], req_array[i]['cache_lifecycle'], lang );
+    	request_json(req_array[i]['name'], req_array[i]['req_url'], req_array[i]['data_type'], req_array[i]['results_count'], req_array[i]['use_header'], req_array[i]['cache_lifecycle'], lang, res);
     }
 }
 // -------------  end call_request_json.js  ----
@@ -737,7 +736,15 @@ async function translate_msgs(text, target, name) {
     });
 }
 
-
+function checkReady(name, lang, res, failed = false){
+	ready_now++;
+	console.log('1. ready now: ' + ready_now + ' / ' + ready_full);
+	console.log(failed);
+	if(ready_now >= ready_full)
+	{
+		paste_msgs(res, req_array, lang);
+	}
+}
 // sending response...
 
 function response_postPasteMsgs(res){
@@ -753,7 +760,7 @@ function response_postPasteMsgs(res){
 	var position = now % full_loop_ms;
 	position = parseInt ( position / screen_interval ) * char_num;
 	var sliced_msg = msgs.substr(position, char_num);
-	
+	console.log('sending response...');
 	setTimeout(function(){
 		res.json(
 			{ 
@@ -777,6 +784,7 @@ app.listen(3000, () => {
 });
 
 app.get("/now", (req, res, next) => {
+	ready_now = 0;
 	var dataFolder = __dirname + '/static/data/';
 	// get language from query string
 	const queryObject = url.parse(req.url,true).query;
@@ -798,15 +806,9 @@ app.get("/now", (req, res, next) => {
 		if(typeof filenames != 'undefined'){
 			req_array.forEach(req => {
 				var name = req['name']+'.txt';
-				// if(!filenames.includes(name)){
-				// 	console.log('new data: '+req['name']);
-				// 	new_data.push(req['name']);
-				// }
 				try {
-				  var this_statSync = fs.statSync(dataFolder + name);
-				  // console.log('statSync: ');
-				  // console.log(this_statSync);
-				  cache_mtime[lang][name] = parseInt(Date.parse(this_statSync.mtime)/1000);
+					var this_statSync = fs.statSync(dataFolder + name);
+					cache_mtime[lang][name] = parseInt(Date.parse(this_statSync.mtime)/1000);
 				}
 				catch(err) {
 				    cache_mtime[lang][name] = 0;
@@ -816,37 +818,37 @@ app.get("/now", (req, res, next) => {
 				cache_filenames[lang].push(name);
 			});
 			if(lang == 'en'){
-				call_request_json(lang);
-				paste_msgs(res, req_array, lang);
+				call_request_json(lang, res);
+				// paste_msgs(res, req_array, lang);
 
-				var temp_length = msgs.length;
-				while(temp_length % char_num != 0){
-					msgs += ' ';
-					temp_length = msgs.length;
-				}
-				var msgs_length = msgs.length;
-				var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
-				var position = now % full_loop_ms;
-				position = parseInt ( position / screen_interval ) * char_num;
-				var sliced_msg = msgs.substr(position, char_num);
-				console.log('sending response...');
-				res.json(
-					{ 
-						// now: now, 
-						msgs: msgs, 
-						msgs_length: msgs_length, 
-						position: position, 
-						delay_ms: delay_ms, 
-						screen_interval: screen_interval, 
-						full_loop_ms: full_loop_ms, 
-						msgs_beginning: msgs_beginning, 
-						msgs_opening: msgs_opening, 
-						sliced_msg: sliced_msg
-					}
-				);
+				// var temp_length = msgs.length;
+				// while(temp_length % char_num != 0){
+				// 	msgs += ' ';
+				// 	temp_length = msgs.length;
+				// }
+				// var msgs_length = msgs.length;
+				// var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
+				// var position = now % full_loop_ms;
+				// position = parseInt ( position / screen_interval ) * char_num;
+				// var sliced_msg = msgs.substr(position, char_num);
+				// console.log('sending response...');
+				// res.json(
+				// 	{ 
+				// 		msgs: msgs, 
+				// 		msgs_length: msgs_length, 
+				// 		position: position, 
+				// 		delay_ms: delay_ms, 
+				// 		screen_interval: screen_interval, 
+				// 		full_loop_ms: full_loop_ms, 
+				// 		msgs_beginning: msgs_beginning, 
+				// 		msgs_opening: msgs_opening, 
+				// 		sliced_msg: sliced_msg
+				// 	}
+				// );
 			}
 			else
 			{
+				// console.log('0. receiving request of'+lang);
 				fs.readdir(dataFolder_en, (err, filenames) => {
 					if(typeof filenames != 'undefined'){
 						req_array.forEach(req => {
@@ -862,37 +864,36 @@ app.get("/now", (req, res, next) => {
 						filenames.forEach(name=>{
 							cache_filenames['en'].push(name);
 						});
-						call_request_json(lang);
-						var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-						paste_msgs(res, req_array, lang);
-						var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-						var temp_length = msgs.length;
-						while(temp_length % char_num != 0){
-							msgs += ' ';
-							temp_length = msgs.length;
-						}
-						var msgs_length = msgs.length;
-						var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
-						var position = now % full_loop_ms;
-						position = parseInt ( position / screen_interval ) * char_num;
-						var sliced_msg = msgs.substr(position, char_num);
-						console.log('sending response...');
-						setTimeout(function(){
-							res.json(
-								{ 
-									// now: now, 
-									msgs: msgs, 
-									msgs_length: msgs_length, 
-									position: position, 
-									delay_ms: delay_ms, 
-									screen_interval: screen_interval, 
-									full_loop_ms: full_loop_ms, 
-									msgs_beginning: msgs_beginning, 
-									msgs_opening: msgs_opening, 
-									sliced_msg: sliced_msg
-								}
-							);
-						}, 0);
+						call_request_json(lang, res);
+
+						
+						// var temp_length = msgs.length;
+						// while(temp_length % char_num != 0){
+						// 	msgs += ' ';
+						// 	temp_length = msgs.length;
+						// }
+						// var msgs_length = msgs.length;
+						// var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
+						// var position = now % full_loop_ms;
+						// position = parseInt ( position / screen_interval ) * char_num;
+						// var sliced_msg = msgs.substr(position, char_num);
+						// console.log('sending response...');
+						// setTimeout(function(){
+						// 	res.json(
+						// 		{ 
+						// 			// now: now, 
+						// 			msgs: msgs, 
+						// 			msgs_length: msgs_length, 
+						// 			position: position, 
+						// 			delay_ms: delay_ms, 
+						// 			screen_interval: screen_interval, 
+						// 			full_loop_ms: full_loop_ms, 
+						// 			msgs_beginning: msgs_beginning, 
+						// 			msgs_opening: msgs_opening, 
+						// 			sliced_msg: sliced_msg
+						// 		}
+						// 	);
+						// }, 0);
 					}
 				});
 			}
