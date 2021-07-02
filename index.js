@@ -1,5 +1,5 @@
 process.env.TZ = 'America/New_York';
-require('dotenv').config();
+require('dotenv').config({path: '/var/www/node/now/.env'});
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
