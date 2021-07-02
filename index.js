@@ -1,5 +1,5 @@
 process.env.TZ = 'America/New_York';
-require('dotenv').config({path: '/var/www/node/now/.env'});
+require('dotenv').config();
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
@@ -9,7 +9,6 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 var app = express();
 app.use(cors());
-console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 var supported_lang = ['en', 'zh', 'es', 'ko', 'ar'];
 
@@ -683,7 +682,6 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang,
 
 						update_cache(cache_filename, handled_response[lang][cache_filename], 'txt', now_timestamp, lang); // update lang cache
 						var handled = handle_msgs(cache_filename, handled_response[lang][cache_filename], results_count, lang, true);
-						console.log(handles);
 					    
 				    }).catch(err => {
 				        // console.error(err);
