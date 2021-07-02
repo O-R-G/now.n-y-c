@@ -725,13 +725,14 @@ const translate = new Translate();
 // const translate = new Translate();
 
 async function translate_msgs(text, target, name) {
-	console.log('translating '+text+ 'into ' +target+'...');
+	console.log('translating '+name+ 'into ' +target+'...');
     let [translations] = await translate.translate(text, target);
     translations = Array.isArray(translations) ? translations : [translations];
     translations.forEach((translation, i) => {
     	// console.log('translated '+name+' = ');
     	// console.log(translation);
     	handled_response[target][name] = translation;
+    	onsole.log('translating '+name+ ' finished');
     });
 }
 
