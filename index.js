@@ -83,31 +83,31 @@ var now_hr = now.hour();
 var now_min = now.minute();
 
 var req_array = [
-	// {	
-	// 	'name': 'new-york-times',
-	// 	'req_url': 'https://api.nytimes.com/svc/news/v3/content/all/all.json?api-key=FJ5pNfQtwlkTP27jg62s2De8IM0Ozvjk', 
-	// 	'data_type': 'json',
- //        'results_count': 3,
- //        'use_header': false,
- //        'cache_lifecycle': 10
-	// }
-	// ,{	
-	// 	'name': 'covidtracking',
-	// 	'req_url': 'https://api.covidtracking.com/v1/states/current.json', 
-	// 	'data_type': 'json',
- //        'results_count': '',
- //        'use_header': true, 
- //        'cache_lifecycle': 10
-	// }
-	// ,{	
-	// 	'name': '311',
-	// 	'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD'&$limit=2", 
-	// 	'data_type': 'json',
- //        'results_count': '',
- //        'use_header': true,
- //        'cache_lifecycle': 10
-	// }
-	// ,
+	{	
+		'name': 'new-york-times',
+		'req_url': 'https://api.nytimes.com/svc/news/v3/content/all/all.json?api-key=FJ5pNfQtwlkTP27jg62s2De8IM0Ozvjk', 
+		'data_type': 'json',
+        'results_count': 3,
+        'use_header': false,
+        'cache_lifecycle': 10
+	}
+	,{	
+		'name': 'covidtracking',
+		'req_url': 'https://api.covidtracking.com/v1/states/current.json', 
+		'data_type': 'json',
+        'results_count': '',
+        'use_header': true, 
+        'cache_lifecycle': 10
+	}
+	,{	
+		'name': '311',
+		'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD'&$limit=2", 
+		'data_type': 'json',
+        'results_count': '',
+        'use_header': true,
+        'cache_lifecycle': 10
+	}
+	,
 	{	
 		'name': 'train',
 		'req_url': "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min,
@@ -116,65 +116,65 @@ var req_array = [
         'use_header': false,
         'cache_lifecycle': 1
 	}
-	// ,{
-	// 	'name':'population',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/xywu-7bv9.json',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1440
-	// }
-	// ,{
-	// 	'name':'hotspot',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/varh-9tsp.json',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1440
-	// }
-	// ,{
-	// 	'name':'street-tree',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/uvpi-gqnh.json',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1440
-	// }
-	// ,{
-	// 	// https://aqicn.org/api/
-	// 	'name':'air-quality',
-	// 	'req_url': 'https://api.waqi.info/feed/newyork/?token=e0756365c32aba9371b4d126178465fba05bb6f5',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1440
-	// }
-	// ,{
-	// 	// https://data.cityofnewyork.us/Environment/Energy-Efficiency-Projects/h3qk-ybvt
-	// 	'name':'energy-efficiency-projects',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/h3qk-ybvt.json',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1440
-	// }
-	// ,{
-	// 	// https://data.cityofnewyork.us/Business/License-Applications/ptev-4hud
-	// 	'name':'DCA-license',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/ptev-4hud.json',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1440
-	// }
-	// ,{
-	// 	'name':'weather',
-	// 	'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
-	// 	'data_type': 'json',
-	// 	'results_count': '',
-	// 	'use_header': false,
-	// 	'cache_lifecycle': 1
-	// }
+	,{
+		'name':'population',
+		'req_url': 'https://data.cityofnewyork.us/resource/xywu-7bv9.json',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1440
+	}
+	,{
+		'name':'hotspot',
+		'req_url': 'https://data.cityofnewyork.us/resource/varh-9tsp.json',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1440
+	}
+	,{
+		'name':'street-tree',
+		'req_url': 'https://data.cityofnewyork.us/resource/uvpi-gqnh.json',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1440
+	}
+	,{
+		// https://aqicn.org/api/
+		'name':'air-quality',
+		'req_url': 'https://api.waqi.info/feed/newyork/?token=e0756365c32aba9371b4d126178465fba05bb6f5',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1440
+	}
+	,{
+		// https://data.cityofnewyork.us/Environment/Energy-Efficiency-Projects/h3qk-ybvt
+		'name':'energy-efficiency-projects',
+		'req_url': 'https://data.cityofnewyork.us/resource/h3qk-ybvt.json',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1440
+	}
+	,{
+		// https://data.cityofnewyork.us/Business/License-Applications/ptev-4hud
+		'name':'DCA-license',
+		'req_url': 'https://data.cityofnewyork.us/resource/ptev-4hud.json',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1440
+	}
+	,{
+		'name':'weather',
+		'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
+		'data_type': 'json',
+		'results_count': '',
+		'use_header': false,
+		'cache_lifecycle': 1
+	}
 	
 ];
 
