@@ -47,7 +47,10 @@ supported_lang.forEach(function(el){
 	cache_mtime[el] = {};
 	handled_response[el] = {};
 });
-// console.log(cache_mtime);
+
+var char_num = 48;
+var delay_ms = 3000;
+var screen_interval = 5600; // 50 ms * 52 + 3000 ms
 
 // --------------  msgs.js -----------------
 // date / time
@@ -80,31 +83,32 @@ var now_hr = now.hour();
 var now_min = now.minute();
 
 var req_array = [
+	// {	
+	// 	'name': 'new-york-times',
+	// 	'req_url': 'https://api.nytimes.com/svc/news/v3/content/all/all.json?api-key=FJ5pNfQtwlkTP27jg62s2De8IM0Ozvjk', 
+	// 	'data_type': 'json',
+ //        'results_count': 3,
+ //        'use_header': false,
+ //        'cache_lifecycle': 10
+	// }
+	// ,{	
+	// 	'name': 'covidtracking',
+	// 	'req_url': 'https://api.covidtracking.com/v1/states/current.json', 
+	// 	'data_type': 'json',
+ //        'results_count': '',
+ //        'use_header': true, 
+ //        'cache_lifecycle': 10
+	// }
+	// ,{	
+	// 	'name': '311',
+	// 	'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD'&$limit=2", 
+	// 	'data_type': 'json',
+ //        'results_count': '',
+ //        'use_header': true,
+ //        'cache_lifecycle': 10
+	// }
+	// ,
 	{	
-		'name': 'new-york-times',
-		'req_url': 'https://api.nytimes.com/svc/news/v3/content/all/all.json?api-key=FJ5pNfQtwlkTP27jg62s2De8IM0Ozvjk', 
-		'data_type': 'json',
-        'results_count': 3,
-        'use_header': false,
-        'cache_lifecycle': 10
-	}
-	,{	
-		'name': 'covidtracking',
-		'req_url': 'https://api.covidtracking.com/v1/states/current.json', 
-		'data_type': 'json',
-        'results_count': '',
-        'use_header': true, 
-        'cache_lifecycle': 10
-	}
-	,{	
-		'name': '311',
-		'req_url': "https://data.cityofnewyork.us/resource/erm2-nwe9.json?$$app_token=LTyWtvrOoHffWyAwXcdEIQDup&$where=agency not like 'NYPD'&$limit=2", 
-		'data_type': 'json',
-        'results_count': '',
-        'use_header': true,
-        'cache_lifecycle': 10
-	}
-	,{	
 		'name': 'train',
 		'req_url': "https://mtaapi.herokuapp.com/times?hour="+now_hr+"&minute="+now_min,
 		'data_type': 'json',
@@ -112,73 +116,65 @@ var req_array = [
         'use_header': false,
         'cache_lifecycle': 1
 	}
-	,{
-		'name':'population',
-		'req_url': 'https://data.cityofnewyork.us/resource/xywu-7bv9.json',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
-	,{
-		'name':'hotspot',
-		'req_url': 'https://data.cityofnewyork.us/resource/varh-9tsp.json',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
 	// ,{
-	// 	'name':'restaurant-inspection',
-	// 	'req_url': 'https://data.cityofnewyork.us/resource/43nn-pn8j.json',
+	// 	'name':'population',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/xywu-7bv9.json',
 	// 	'data_type': 'json',
 	// 	'results_count': '',
 	// 	'use_header': false,
 	// 	'cache_lifecycle': 1440
 	// }
-	,{
-		'name':'street-tree',
-		'req_url': 'https://data.cityofnewyork.us/resource/uvpi-gqnh.json',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
-	,{
-		// https://aqicn.org/api/
-		'name':'air-quality',
-		'req_url': 'https://api.waqi.info/feed/newyork/?token=e0756365c32aba9371b4d126178465fba05bb6f5',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
-	,{
-		// https://data.cityofnewyork.us/Environment/Energy-Efficiency-Projects/h3qk-ybvt
-		'name':'energy-efficiency-projects',
-		'req_url': 'https://data.cityofnewyork.us/resource/h3qk-ybvt.json',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
-	,{
-		// https://data.cityofnewyork.us/Business/License-Applications/ptev-4hud
-		'name':'DCA-license',
-		'req_url': 'https://data.cityofnewyork.us/resource/ptev-4hud.json',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1440
-	}
-	,{
-		'name':'weather',
-		'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
-		'data_type': 'json',
-		'results_count': '',
-		'use_header': false,
-		'cache_lifecycle': 1
-	}
+	// ,{
+	// 	'name':'hotspot',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/varh-9tsp.json',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1440
+	// }
+	// ,{
+	// 	'name':'street-tree',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/uvpi-gqnh.json',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1440
+	// }
+	// ,{
+	// 	// https://aqicn.org/api/
+	// 	'name':'air-quality',
+	// 	'req_url': 'https://api.waqi.info/feed/newyork/?token=e0756365c32aba9371b4d126178465fba05bb6f5',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1440
+	// }
+	// ,{
+	// 	// https://data.cityofnewyork.us/Environment/Energy-Efficiency-Projects/h3qk-ybvt
+	// 	'name':'energy-efficiency-projects',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/h3qk-ybvt.json',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1440
+	// }
+	// ,{
+	// 	// https://data.cityofnewyork.us/Business/License-Applications/ptev-4hud
+	// 	'name':'DCA-license',
+	// 	'req_url': 'https://data.cityofnewyork.us/resource/ptev-4hud.json',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1440
+	// }
+	// ,{
+	// 	'name':'weather',
+	// 	'req_url': 'https://api.weather.gov/gridpoints/OKX/33,37/forecast',
+	// 	'data_type': 'json',
+	// 	'results_count': '',
+	// 	'use_header': false,
+	// 	'cache_lifecycle': 1
+	// }
 	
 ];
 
@@ -230,7 +226,7 @@ var ready_now = 0;
 var ready_full = req_array.length;
 
 function handle_msgs(name, response, results_count = false, lang, formatted=false){
-	console.log('handle_msgs');
+
 	if(results_count == '')
 		results_count = false;
 	var response = response;
@@ -406,7 +402,9 @@ function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-function paste_msgs(req_array, lang = 'en'){
+function paste_msgs(res, req_array, lang = 'en'){
+	console.log('paste_msgs');
+	
 	// console.log('paste_msgs: '+lang);
 	msgs_temp = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 	for(i = 0; i < req_array.length; i++){
@@ -420,7 +418,7 @@ function paste_msgs(req_array, lang = 'en'){
 	msgs_temp = msgs_temp.split('');
 	msgs = msgs_temp.join('');
 	// console.log(msgs);
-
+	// response_postPasteMsgs(res);
 }
 
 // this is different from update_msgs() (at least for now)
@@ -458,14 +456,13 @@ Date.prototype.addDays = function(days) {
 }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false, lang) {
-    // console.log('=====  '+name+'  =====');
+    console.log('=====  '+name+'  =====');
     var json = '';
     var hasCache = cache_filenames[lang].includes(name+'.txt') !== false; // whether it has cache of the specified language
     var hasEnCache = cache_filenames['en'].includes(name+'.txt') !== false; // whether it has cache of english
     var this_en_mtime = cache_mtime['en'][name+'.txt']; // m time of the enslish json
     var this_mtime = cache_mtime[lang][name+'.txt'];
-    // this_en_mtime = parseInt(this_en_mtime/1000);
-    // this_mtime = parseInt(this_mtime/1000);
+
     if(lang == 'en'){
     	this_en_mtime = this_mtime;
     	hasEnCache = hasCache;
@@ -482,17 +479,26 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     else
     	isNew = false;
     // force using chinese json. Workaround for translate-temp
-    if(lang != 'en')
+    if(lang == 'ccccc')
     {
     	request_cache(name, 'txt', results_count, lang);
     }
     else
     {
-    	// console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+    	// console.log('now_timestamp   = '+now_timestamp);
+    	// console.log('hasEnCache? '+hasEnCache);
+    	// console.log(cache_mtime['en']);
+    	// console.log('this_mtime      = '+this_mtime);
+    	// console.log('this_en_mtime      = '+this_en_mtime);
+    	// console.log(now_timestamp - this_mtime);
+    	// console.log('cache_lifecycle = '+cache_lifecycle);
+    	console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+    	// console.log('en cache expired: '+ (now_timestamp - this_en_mtime > cache_lifecycle));
 	    if( (cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle)) || !cache_lifecycle || !hasEnCache){
 	    	// 1. the english json is expired
 	    	// 2. cache_lifecycle is set to false
 	    	// 3. there's no english json
+
 	    	if( cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle) ){
 	    		console.log("the english cache of "+name+" is expired. request_live...");
 	    	}
@@ -503,11 +509,11 @@ function request_json(name, request_url, data_type, results_count = false, use_h
 			request_live(name, request_url, data_type, results_count, use_header, hasCache, now_timestamp, false, lang);
 	    }else{
 	    	if( isNew || this_mtime < this_en_mtime - 100 ){
-	    		// console.log('request_english_cache');
+	    		console.log('request_english_cache');
 	    		request_english_cache(name, 'txt', lang);
 	    	}
 	    	else{
-
+	    		// console.log('request cache?');
 	    		request_cache(name, 'txt', results_count, lang);
 	    	}
 	    }
@@ -517,6 +523,7 @@ function request_json(name, request_url, data_type, results_count = false, use_h
 }
 
 function request_live(name, request_url, data_type,results_count = false, use_header = true, hasCache, now_timestamp, cache_lifecycle = false, lang){
+	console.log('request_live for '+name+'...');
 	var counter = 0;
 	var counter_max = 3;
 	
@@ -534,6 +541,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 
       			try{	
       				var response_en = JSON.parse(httpRequest.responseText);
+      				console.log('request_live for '+name+' success!');
       			}
       			catch(err)
       			{
@@ -566,11 +574,14 @@ function request_live(name, request_url, data_type,results_count = false, use_he
       			}
       			else
       			{
+      				console.log('received en live data for '+lang+' '+name);
       				// console.log('handled_response_en = ');
       				// console.log(handled_response_en);
       				translate_msgs(handled_response_en, lang, name).then(translated => {
 					    now_timestamp = new Date().getTime();
     					now_timestamp = parseInt(now_timestamp/1000); // ms to s
+    					// console.log('msg of '+name+' translated');
+    					// paste_msgs();
     					update_cache(name, handled_response[lang][name], 'txt', now_timestamp, lang); // update lang cache
     					update_cache(name, handled_response_en, 'txt', now_timestamp, 'en'); // update en cache
 				    }).catch(err => {
@@ -663,7 +674,7 @@ function request_english_cache(cache_filename = '', cache_data_type="txt", lang)
   				console.log('has en cache');
   				fs.readFile(req_url_en, 'utf8', function(err, data){
 					translate_msgs(data, lang, cache_filename).then(translated => {
-						console.log(data);
+						// console.log(data);
 						// console.log(handled_response[lang][cache_filename]);
 						// console.log(cache_filename);
 						// console.log(handled_response[lang][cache_filename]);
@@ -716,6 +727,7 @@ const translate = new Translate();
 // const translate = new Translate();
 
 async function translate_msgs(text, target, name) {
+	console.log('translating '+text+ 'into ' +target+'...');
     let [translations] = await translate.translate(text, target);
     translations = Array.isArray(translations) ? translations : [translations];
     translations.forEach((translation, i) => {
@@ -723,6 +735,41 @@ async function translate_msgs(text, target, name) {
     	// console.log(translation);
     	handled_response[target][name] = translation;
     });
+}
+
+
+// sending response...
+
+function response_postPasteMsgs(res){
+	console.log('response_postPasteMsgs');
+	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
+	var temp_length = msgs.length;
+	while(temp_length % char_num != 0){
+		msgs += ' ';
+		temp_length = msgs.length;
+	}
+	var msgs_length = msgs.length;
+	var full_loop_ms = parseInt(msgs_length / char_num) * screen_interval ;
+	var position = now % full_loop_ms;
+	position = parseInt ( position / screen_interval ) * char_num;
+	var sliced_msg = msgs.substr(position, char_num);
+	
+	setTimeout(function(){
+		res.json(
+			{ 
+				// now: now, 
+				msgs: msgs, 
+				msgs_length: msgs_length, 
+				position: position, 
+				delay_ms: delay_ms, 
+				screen_interval: screen_interval, 
+				full_loop_ms: full_loop_ms, 
+				msgs_beginning: msgs_beginning, 
+				msgs_opening: msgs_opening, 
+				sliced_msg: sliced_msg
+			}
+		);
+	}, 0);
 }
 
 app.listen(3000, () => {
@@ -738,9 +785,13 @@ app.get("/now", (req, res, next) => {
   	{
   		lang = queryObject['lang'];
   	}
-  	// console.log('lang = '+lang);
   	var dataFolder_en = dataFolder + 'en' + '/';
   	dataFolder = dataFolder + lang + '/';
+  	
+  	var now = new Date().getTime();
+	var now_ny = get_time();
+	update_msgs_opening(now_ny);
+	var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 
     // load cached	
 	fs.readdir(dataFolder, (err, filenames) => {
@@ -753,7 +804,9 @@ app.get("/now", (req, res, next) => {
 				// }
 				try {
 				  var this_statSync = fs.statSync(dataFolder + name);
-				  cache_mtime[lang][name] = this_statSync.mtime;
+				  // console.log('statSync: ');
+				  // console.log(this_statSync);
+				  cache_mtime[lang][name] = parseInt(Date.parse(this_statSync.mtime)/1000);
 				}
 				catch(err) {
 				    cache_mtime[lang][name] = 0;
@@ -763,18 +816,8 @@ app.get("/now", (req, res, next) => {
 				cache_filenames[lang].push(name);
 			});
 			if(lang == 'en'){
-				// console.log('lang = en')
-				// call_request_json(lang);
-
-				var now = new Date().getTime();
-				var now_ny = get_time();
-				var char_num = 48;
-				var delay_ms = 3000;
-				var screen_interval = 5600; // 50 ms * 52 + 3000 ms
 				call_request_json(lang);
-				update_msgs_opening(now_ny);
-				var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-				paste_msgs(req_array, lang);
+				paste_msgs(res, req_array, lang);
 
 				var temp_length = msgs.length;
 				while(temp_length % char_num != 0){
@@ -786,10 +829,10 @@ app.get("/now", (req, res, next) => {
 				var position = now % full_loop_ms;
 				position = parseInt ( position / screen_interval ) * char_num;
 				var sliced_msg = msgs.substr(position, char_num);
-				console.log('sending message');
+				console.log('sending response...');
 				res.json(
 					{ 
-						now: now, 
+						// now: now, 
 						msgs: msgs, 
 						msgs_length: msgs_length, 
 						position: position, 
@@ -807,14 +850,10 @@ app.get("/now", (req, res, next) => {
 				fs.readdir(dataFolder_en, (err, filenames) => {
 					if(typeof filenames != 'undefined'){
 						req_array.forEach(req => {
-							var name = req['name']+'.json';
-							// if(!filenames.includes(name)){
-							// 	console.log('new data: '+req['name']);
-							// 	new_data.push(req['name']);
-							// }
+							var name = req['name']+'.txt';
 							try {
-							  var this_statSync = fs.statSync(dataFolder + name);
-							  cache_mtime['en'][name] = this_statSync.mtime;
+							  var this_statSync = fs.statSync(dataFolder_en + name);
+							  cache_mtime['en'][name] = parseInt(Date.parse(this_statSync.mtime)/1000);
 							}
 							catch(err) {
 							    cache_mtime['en'][name] = 0;
@@ -824,17 +863,9 @@ app.get("/now", (req, res, next) => {
 							cache_filenames['en'].push(name);
 						});
 						call_request_json(lang);
-						// console.log("cache_mtime['en'] = ");
-						// console.log(cache_mtime['en']);
-						var now = new Date().getTime();
-						var now_ny = get_time();
-						var char_num = 48;
-						var delay_ms = 3000;
-						var screen_interval = 5600; // 50 ms * 52 + 3000 ms
-						update_msgs_opening(now_ny);
 						var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
-						paste_msgs(req_array, lang);
-
+						paste_msgs(res, req_array, lang);
+						var msgs_opening = msgs_sections['opening'][0] + msgs_sections['opening'][1];
 						var temp_length = msgs.length;
 						while(temp_length % char_num != 0){
 							msgs += ' ';
@@ -849,7 +880,7 @@ app.get("/now", (req, res, next) => {
 						setTimeout(function(){
 							res.json(
 								{ 
-									now: now, 
+									// now: now, 
 									msgs: msgs, 
 									msgs_length: msgs_length, 
 									position: position, 
@@ -862,14 +893,13 @@ app.get("/now", (req, res, next) => {
 								}
 							);
 						}, 0);
-						
 					}
 				});
 			}
 		}
 	});
 
-	
+	// console.log('after fs');
 
     
 });
