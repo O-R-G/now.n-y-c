@@ -1,11 +1,11 @@
 process.env.TZ = 'America/New_York';
-require('dotenv').config();
+require('dotenv').config({ path:__dirname + '/.env'});
+console.log(__dirname);
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
 const url = require('url');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-// var moment = require('moment-timezone');
 
 var app = express();
 app.use(cors());
@@ -729,7 +729,10 @@ app.get("/now", (req, res, next) => {
   	if(queryObject['lang'] != undefined)
   	{
   		lang = queryObject['lang'];
+  		if(!supported_lang.contains(lang))
+  			lang = 'en';
   	}
+
   	var dataFolder_en = dataFolder + 'en' + '/';
   	dataFolder = dataFolder + lang + '/';
   	
