@@ -290,22 +290,6 @@ function handle_msgs(name, response, results_count = false, lang, formatted=fals
 				index++;
 			}
 		}
-		// else if(name == 'restaurant-inspection'){
-		// 	// var index = parseInt( response.length * Math.random() );
-		// 	var index = 0;
-		// 	var data_count = 0;
-		// 	results_count = results_count ? results_count : 1;
-		// 	this_msgs += ' From DOHMH New York City Restaurant Inspection Results : ';
-			
-		// 	while(data_count < results_count){
-		// 		if(response[index]['critical_flag'] == 'N' && response[index]['grade'] == 'A'){
-		// 			this_msgs += response[index]['dba'] + ' on '+ response[index]['street']+' is graded as A. '+msgs_break;
-		// 			data_count++;
-		// 		}
-		// 		// index = parseInt( response.length * Math.random() );
-		// 		index++;			
-		// 	}
-		// }
 		else if(name == 'street-tree'){
 			// var index = parseInt( response.length * Math.random() );
 			var index = 0;
@@ -740,7 +724,7 @@ function checkReady(name, lang, res, failed = false){
 	ready_now++;
 
 	console.log('1. ready now: ' + ready_now + ' / ' + ready_full);
-	console.log(failed);
+
 	if(ready_now >= ready_full)
 	{
 		if(response_timer != null)
