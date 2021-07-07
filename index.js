@@ -729,7 +729,7 @@ app.get("/now", (req, res, next) => {
   	if(queryObject['lang'] != undefined)
   	{
   		lang = queryObject['lang'];
-  		if(!supported_lang.contains(lang))
+  		if(!supported_lang.includes(lang))
   			lang = 'en';
   	}
 
