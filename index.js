@@ -1,6 +1,6 @@
 process.env.TZ = 'America/New_York';
 require('dotenv').config({ path:__dirname + '/.env'});
-console.log(__dirname);
+// console.log(__dirname);
 var express = require("express");
 var cors = require('cors');
 var fs = require('fs');
@@ -42,6 +42,7 @@ var cache_mtime = {};
 var cache_filenames = {};
 var handled_response = {};
 var msgs = {};
+var title = 'NEW YORK CONSOLIDATED';
 supported_lang.forEach(function(el){
 	cache_filenames[el] = [];
 	cache_mtime[el] = {};
@@ -52,6 +53,8 @@ var char_num = 48;
 var delay_ms = 3000;
 var screen_interval = 5600; // 50 ms * 52 + 3000 ms
 var response_timer = null;
+
+
 // --------------  msgs.js -----------------
 // date / time
 Date.prototype.today = function () { 
@@ -71,11 +74,26 @@ Date.prototype.minute = function () {
 Date.prototype.second = function () {
     return ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 }
-
-function get_time(d = false){
+const {Translate} = require('@google-cloud/translate').v2;
+var translate = new Translate();
+function get_time(d = false, lang = 'en'){
 	if(!d)
     	var d = new Date();
-	return [d.today().toUpperCase(), d.now().toUpperCase()];
+    var date = d.today().toUpperCase();
+	var time = d.now().toUpperCase();
+    // if(lang != 'en'){
+    // 	translate = new Translate();
+    // 	let [translations] = translate.translate(date + '[]'+time, lang);
+	   //  translations = Array.isArray(translations) ? translations : [translations];
+	   //  translations.forEach((translation, i) => {
+	   //  	var temp_arr = translation.split("[]");
+	   //  	date = temp_arr[0];
+	   //  	time = temp_arr[1];
+	   //  	return [date, time];
+	   //  });
+    // }
+    // else
+		return [date, time];
 }
 
 var now = new Date();
@@ -184,8 +202,10 @@ var msgs = 'initial', // the final msgs for display. array of letters
 	msgs_opening = '',
 	msgs_ending = ' 0 1 2 3 4 5 6 7 8 9 Have a nice day.',
 	msgs_break = '///';
-function update_msgs_opening(){
-	var now_ny = get_time();
+function update_msgs_opening(now_ny = []){
+	// console.log(title);
+	if(now_ny.length == 0)
+		var now_ny = get_time();
 	var now_temp_1 = now_ny[0];
 	var length_temp = now_temp_1.length;
 	while(length_temp % 24 != 0)
@@ -200,13 +220,15 @@ function update_msgs_opening(){
 		now_temp_2 += ' ';
 		length_temp = now_temp_2.length;
 	}
+	
 	var output = '';
-	output += 'NEW YORK CONSOLIDATED   ';
+	output += title;
 	output += '                        ';
 	output += now_temp_1 + now_temp_2;
 	output += '––––––––––––––––––––––––';
 	output += '————————————————————————';
 	return output;
+	
 }
 msgs_opening = update_msgs_opening();
 
@@ -361,15 +383,14 @@ function format_msgs(name, response, results_count = false, lang){
 
 function paste_msgs(res, req_array, lang = 'en'){
 	console.log('paste_msgs');
-
-	var msgs_temp = update_msgs_opening();
+	var msgs_temp = msgs_opening;
 	for(i = 0; i < req_array.length; i++){
 		var this_key = req_array[i]['name'];
 		msgs_temp += handled_response[lang][this_key];
 	}
 	msgs_temp += msgs_ending;
 	msgs = msgs_temp.toUpperCase();
-	send_msgs(res, msgs);
+	send_msgs(res, msgs, lang);
 }
 
 // -------------  end msgs.js ---------------------
@@ -382,7 +403,7 @@ Date.prototype.addDays = function(days) {
 }
 
 function request_json(name, request_url, data_type, results_count = false, use_header = true, cache_lifecycle = false, lang, res) {
-    console.log('=====  '+name+'  =====');
+    // console.log('=====  '+name+'  =====');
 
     var hasCache = cache_filenames[lang].includes(name+'.txt') !== false; // whether it has cache of the specified language
     var hasEnCache = cache_filenames['en'].includes(name+'.txt') !== false; // whether it has cache of english
@@ -420,7 +441,7 @@ function request_json(name, request_url, data_type, results_count = false, use_h
     	// console.log('this_en_mtime      = '+this_en_mtime);
     	// console.log(now_timestamp - this_mtime);
     	// console.log('cache_lifecycle = '+cache_lifecycle);
-    	console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
+    	// console.log('cache expired: '+ (now_timestamp - this_mtime > cache_lifecycle));
     	// console.log('en cache expired: '+ (now_timestamp - this_en_mtime > cache_lifecycle));
 	    if( (cache_lifecycle && (now_timestamp - this_en_mtime > cache_lifecycle)) || !cache_lifecycle || !hasEnCache){
 	    	// 1. the english json is expired
@@ -531,7 +552,7 @@ function request_live(name, request_url, data_type,results_count = false, use_he
 }
 
 function update_cache(cache_filename = '', handled_response, cache_data_type='txt', now_timestamp, lang){
-	console.log('updating cache: '+cache_filename +', '+lang+'...');
+	// console.log('updating cache: '+cache_filename +', '+lang+'...');
 	var cache_path = __dirname + '/static/data/'+lang+'/'+cache_filename+'.'+cache_data_type;
 	fs.writeFile(cache_path, handled_response, function(err, result) {
 		if(err) console.log('error', err);
@@ -635,15 +656,13 @@ function call_request_json(lang='en', res){
 
 // translate
 
-const {Translate} = require('@google-cloud/translate').v2;
-const translate = new Translate();
-// const translate = new Translate();
 
 async function translate_msgs(text, target, name, res) {
-	console.log('translating '+name+ ' into ' +target+'...');
+	// console.log('translating '+name+ ' into ' +target+'...');
     let [translations] = await translate.translate(text, target);
     translations = Array.isArray(translations) ? translations : [translations];
     translations.forEach((translation, i) => {
+    	// console.log(translation);
     	var now_timestamp = new Date().getTime();
 		now_timestamp = parseInt(now_timestamp/1000); // ms to s
 		update_cache(name, translation, 'txt', now_timestamp, target); // update lang cache
@@ -653,10 +672,38 @@ async function translate_msgs(text, target, name, res) {
     });
 }
 
+async function translate_title(text, target) {
+	console.log('translating title...');
+    let [translations] = await translate.translate(text, target);
+    translations = Array.isArray(translations) ? translations : [translations];
+    translations.forEach((translation, i) => {
+    	console.log('translated title = '+translation);
+    	title = translation;
+    	while(title.length < 24)
+    		title += ' ';
+    	var now_timestamp = new Date().getTime();
+		now_timestamp = parseInt(now_timestamp/1000); // ms to s
+		update_cache('_title', translation, 'txt', now_timestamp, target); // update lang cache
+    });
+}
+async function get_translated_time(res, req_array, target) {
+	console.log('translating time...');
+	var get_time_temp = get_time();
+	var date = get_time_temp[0];
+	var time = get_time_temp[1];
+    let [translations] = await translate.translate(date+'[]'+time, target);
+    translations = Array.isArray(translations) ? translations : [translations];
+    translations.forEach((translation, i) => {
+    	var time_arr = translation.split("[]");
+  		msgs_opening = update_msgs_opening(time_arr);
+		paste_msgs(res, req_array, target);
+    });
+}
+
 function checkReady(name, lang, res, failed = false){
 	ready_now++;
 
-	console.log('ready now: ' + ready_now + ' / ' + ready_full);
+	// console.log('ready now: ' + ready_now + ' / ' + ready_full);
 	if(failed)
 		console.log('failed: ' + name + ' / ' + lang + "\n" + failed);
 	if(ready_now >= ready_full)
@@ -666,7 +713,14 @@ function checkReady(name, lang, res, failed = false){
 			clearTimeout(response_timer);
 			response_timer = null;
 		}
-		paste_msgs(res, req_array, lang);
+		if(lang == 'en'){
+			msgs_opening = update_msgs_opening();
+			paste_msgs(res, req_array, lang);
+		}
+		else
+		{
+			get_translated_time(res, req_array, lang);
+		}
 	}
 	else
 	{
@@ -679,8 +733,7 @@ function checkReady(name, lang, res, failed = false){
 }
 // sending response...
 
-function send_msgs(res, msgs){
-	msgs_opening = update_msgs_opening();
+function send_msgs(res, msgs, lang){
 	var temp_length = msgs.length;
 	while(temp_length % char_num != 0){
 		msgs += ' ';
@@ -752,12 +805,30 @@ app.get("/now", (req, res, next) => {
 				cache_filenames[lang].push(name);
 			});
 			if(lang == 'en'){
+				console.log(title);
+				title = title + '   ';
 				call_request_json(lang, res);
-				
 			}
 			else
 			{
 				// console.log('0. receiving request of'+lang);
+				console.log('lang = '+lang);
+				fs.access(__dirname + '/static/data/'+lang+'/_title.txt', fs.F_OK, (err) =>{
+					if(err){
+						console.log(err);
+						console.log('no title file');
+						translate_title(title, lang);
+					}
+					else
+					{
+						fs.readFile(__dirname + '/static/data/'+lang+'/_title.txt', 'utf8', function(err, data){
+							title = data;
+							console.log(title);
+							while(title.length < 24)
+    							title += ' ';
+						});
+					}
+				});
 				fs.readdir(dataFolder_en, (err, filenames) => {
 					if(typeof filenames != 'undefined'){
 						req_array.forEach(req => {
