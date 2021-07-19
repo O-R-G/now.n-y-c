@@ -805,8 +805,8 @@ app.get("/now", (req, res, next) => {
 				cache_filenames[lang].push(name);
 			});
 			if(lang == 'en'){
-				console.log(title);
-				title = title + '   ';
+				while(title.length < 24)
+					title += ' ';
 				call_request_json(lang, res);
 			}
 			else
@@ -815,15 +815,12 @@ app.get("/now", (req, res, next) => {
 				console.log('lang = '+lang);
 				fs.access(__dirname + '/static/data/'+lang+'/_title.txt', fs.F_OK, (err) =>{
 					if(err){
-						console.log(err);
-						console.log('no title file');
 						translate_title(title, lang);
 					}
 					else
 					{
 						fs.readFile(__dirname + '/static/data/'+lang+'/_title.txt', 'utf8', function(err, data){
 							title = data;
-							console.log(title);
 							while(title.length < 24)
     							title += ' ';
 						});
