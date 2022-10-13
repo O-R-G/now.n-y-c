@@ -528,7 +528,7 @@ app.listen(3000, () => {
 	console.log("Server running on port 3000");
 });
 
-app.get("/now", (req, res, next) => {
+app.get("/feed", (req, res, next) => {
 	var dataFolder = __dirname + '/static/data/';
 	
 	fs.readdir(dataFolder, (err, filenames) => {
